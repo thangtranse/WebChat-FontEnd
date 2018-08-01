@@ -51,8 +51,41 @@
     align-self: flex-end;
     border-top: 1px solid #333;
     width: 100%;
+    display: flex;
 }
 
 .boxContainsMessages {
     height: 80vh;
+}
+
+.inputTextField {
+    width: 80%;
+    float: left;
+    padding-left: 10px;
+}
+
+.boxBtnSendMessage {
+    width: 20%;
+    float: left;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.boxMessage {
+    padding: 10px;
+}
+
+.boxAvatarMessage {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.boxReceiveMessage {
+    padding: 10px 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }
