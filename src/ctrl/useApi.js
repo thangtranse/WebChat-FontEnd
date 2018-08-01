@@ -4,16 +4,16 @@ class useApi {
 
     login(username, password, callback) {
         axios.post('/login', {
-			username: username,
-			password: password,
-		})
-        .then(response => {
-            console.log(response)
-            return callback(response)
+            username: username,
+            password: password,
         })
-        .catch(function (message) {
-            console.log(message);
-        })
+            .then(response => {
+                console.log(response)
+                return callback(response)
+            })
+            .catch(function (message) {
+                console.log(message);
+            })
     }
 
     logout(uid, token, callback) {
@@ -28,9 +28,9 @@ class useApi {
             console.log(response)
             return callback(response);
         })
-        .catch(function (message) {
-            console.log(message);
-        })
+            .catch(function (message) {
+                console.log(message);
+            })
     }
 
     register(username, password, name, email, callback) {
@@ -47,16 +47,16 @@ class useApi {
             console.log(response)
             return callback(response)
         })
-        .catch(function (message) {
-            console.log(message);
-        })
+            .catch(function (message) {
+                console.log(message);
+            })
     }
 
-    getRoom(authToken, userID, callback){
+    getRoom(authToken, userID, callback) {
         axios({
             method: 'GET',
             url: '/rooms.get',
-            headers:{
+            headers: {
                 'X-Auth-Token': authToken,
                 'X-User-Id': userID
             }
@@ -64,21 +64,21 @@ class useApi {
             console.log(response.data.update)
             return callback(response)
         })
-        .catch(function (message) {
-            console.log(message);
-        })
+            .catch(function (message) {
+                console.log(message);
+            })
     }
 
-    sendMess(authToken, userID, roomID, msg, callback){
+    sendMess(authToken, userID, roomID, msg, callback) {
         axios({
             method: 'POST',
             url: '/chat.sendMessage',
-            headers:{
+            headers: {
                 'X-Auth-Token': authToken,
                 'X-User-Id': userID
             },
             data: {
-                message:{
+                message: {
                     rid: roomID,
                     msg: msg
                 }
@@ -87,29 +87,29 @@ class useApi {
             console.log(response)
             return callback(response)
         })
-        .catch(function (message) {
-            console.log(message);
-        })
+            .catch(function (message) {
+                console.log(message);
+            })
     }
 
-    createChannel(authToken, userID, channelName, callback){
+    createChannel(authToken, userID, channelName, callback) {
         axios({
             method: 'POST',
             url: '/channels.create',
-            headers:{
+            headers: {
                 'X-Auth-Token': authToken,
                 'X-User-Id': userID
             },
             data: {
-               name: channelName
+                name: channelName
             }
         }).then(response => {
             console.log(response)
             return callback(response)
         })
-        .catch(function (message) {
-            console.log(message);
-        })
+            .catch(function (message) {
+                console.log(message);
+            })
     }
 
 }

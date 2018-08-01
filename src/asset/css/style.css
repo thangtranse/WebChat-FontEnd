@@ -89,3 +89,20 @@
     flex-direction: row;
     justify-content: flex-end;
 }
+
+.disable {
+    visibility: hidden;
+    display: none;
+}
+
+.boxLogin {
+    display: flex;
+    flex-direction: column;
+    padding: 10%;
+}
+
+.textUser{
+    color: #E8EAF6;
+    font-size: 19px;
+    padding-left: 10px;
+}
