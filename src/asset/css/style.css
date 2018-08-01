@@ -1,0 +1,58 @@
+.colorbackground_blue {
+    background: #283593;
+}
+
+.colorbackground_silver {
+    background: #283593;
+}
+
+.leftBox {
+    height: 100vh;
+}
+
+.cpmBoxInfo {
+    min-height: 80px;
+    max-height: auto;
+    background: #1A237E;
+    padding: 14px 10px;
+    width: 100%;
+}
+
+.imgBoxInfo {
+    height: 50px !important;
+    width: 50px !important;
+}
+
+.elemtfloat {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.cmpListGroup ul {
+    padding: 0px;
+}
+
+.cmpListGroup ul li {
+    color: #C5CAE9;
+}
+
+.cmpListGroup ul li div span {
+    color: #E8EAF6;
+    font-size: 90%;
+}
+
+.cpmContainsMiddle_BoxChat {
+    display: flex;
+    flex-direction: column;
+}
+
+.boxInputChat {
+    align-self: flex-end;
+    border-top: 1px solid #333;
+    width: 100%;
+}
+
+.boxContainsMessages {
+    height: 80vh;
+}
