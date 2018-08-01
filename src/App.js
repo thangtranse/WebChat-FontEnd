@@ -20,30 +20,34 @@ class App extends React.Component {
             authToken: '',
             isLogin: false,
             isRegister: false,
-            email:'',
+            email: '',
             messages: []
         }
     }
 
     // render login form or user info
     loginForm = () => {
-        if(this.state.isLogin){
-            return(
+        if (this.state.isLogin) {
+            return (
                 <div>
                     <p>{this.state.name}</p>
                     <p>Auth Token: {this.state.authToken}</p>
                     <p>User Id: {this.state.userId}</p>
-                    <button onClick={this.logout}> Logout </button>
+                    <button onClick={this.logout}> Logout</button>
                 </div>
             )
         }
-        else{
-            return(
+        else {
+            return (
                 <form>
-                    <input type="text" name="username" placeholder="Your ID" value={this.state.username} onChange={this.actionChangeText}/>
-                    <input type="password" name="password" placeholder="Your Password" value={this.state.password} onChange={this.actionChangeText}/>
-                    <button type="button" onClick={this.login}> Login </button>
-                    <button type="button" onClick={() => this.setState({isRegister: true})} style={{marginLeft: 20}}> Register </button>
+                    <input type="text" name="username" placeholder="Your ID" value={this.state.username}
+                           onChange={this.actionChangeText}/>
+                    <input type="password" name="password" placeholder="Your Password" value={this.state.password}
+                           onChange={this.actionChangeText}/>
+                    <button type="button" onClick={this.login}> Login</button>
+                    <button type="button" onClick={() => this.setState({isRegister: true})}
+                            style={{marginLeft: 20}}> Register
+                    </button>
                 </form>
             )
         }
@@ -70,8 +74,8 @@ class App extends React.Component {
                 name: '',
                 userId: '',
                 authToken: '',
-                password:'',
-                isLogin:false
+                password: '',
+                isLogin: false
             })
         });
     }
@@ -80,7 +84,7 @@ class App extends React.Component {
     // Register if success call login
     register = () => {
         api.register(this.state.username, this.state.password, this.state.name, this.state.email, resp => {
-            if(resp.status === 200){
+            if (resp.status === 200) {
                 this.login()
             }
         })
@@ -114,28 +118,32 @@ class App extends React.Component {
 
     // render login form or register form
     authForm = () => {
-        if(this.state.isRegister){
+        if (this.state.isRegister) {
             return (
                 <div>
                     <form>
                         <label style={{marginRight: 20}}>Username</label>
-                        <input type="text" name="username" placeholder="Your ID" value={this.state.username} onChange={this.actionChangeText}/><br/><br/>
+                        <input type="text" name="username" placeholder="Your ID" value={this.state.username}
+                               onChange={this.actionChangeText}/><br/><br/>
 
                         <label style={{marginRight: 20}}>Password</label>
-                        <input type="password" name="password" placeholder="Password" value={this.state.password} onChange={this.actionChangeText}/><br/><br/>
+                        <input type="password" name="password" placeholder="Password" value={this.state.password}
+                               onChange={this.actionChangeText}/><br/><br/>
 
                         <label style={{marginRight: 20}}>Full Name</label>
-                        <input type="text" name="name" placeholder="Full Name" value={this.state.name} onChange={this.actionChangeText}/><br/><br/>
+                        <input type="text" name="name" placeholder="Full Name" value={this.state.name}
+                               onChange={this.actionChangeText}/><br/><br/>
 
                         <label style={{marginRight: 20}}>Email</label>
-                        <input type="email" name="email" placeholder="Email" value={this.state.email} onChange={this.actionChangeText}/><br/><br/>
-                        <button type="button" onClick={this.register}> Register </button>
+                        <input type="email" name="email" placeholder="Email" value={this.state.email}
+                               onChange={this.actionChangeText}/><br/><br/>
+                        <button type="button" onClick={this.register}> Register</button>
                     </form>
                 </div>
             )
         }
-        else{
-            return(
+        else {
+            return (
                 <div>
                     {this.loginForm()}
                 </div>
@@ -143,13 +151,9 @@ class App extends React.Component {
         }
     }
 
-
     render() {
         return (
             <div>
-                <div>
-                    {this.authForm()}
-                </div>
                 <Grid container spacing={0}>
                     <Grid item xs={2} className="colorbackground_blue leftBox">
                         <CpmContainsLeft/>
@@ -164,7 +168,6 @@ class App extends React.Component {
             </div>
         );
     }
-
 
 
 }
