@@ -40,6 +40,8 @@ class cpmBoxInfo extends React.Component {
                 authToken: response.data.data.authToken,
                 isLogin: true,
             });
+            sessionStorage.setItem('authToken', response.data.data.authToken);
+            sessionStorage.setItem('userId', response.data.data.userId);
         });
     }
 
@@ -91,6 +93,9 @@ class cpmBoxInfo extends React.Component {
                         </DialogContentText>
                     </div>
                     <DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                            Facebook
+                        </Button>
                         <Button onClick={this.handleClose} color="primary">
                             Đăng ký
                         </Button>
