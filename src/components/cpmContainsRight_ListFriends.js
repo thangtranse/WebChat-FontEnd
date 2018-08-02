@@ -6,7 +6,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import LensIcon from '@material-ui/icons/Lens'
 import Avatar from "@material-ui/core/Avatar";
-import SvgIcon from "@material-ui/core/SvgIcon";
+
+var api = require('../ctrl/useApi');
 
 class cpmContainsRight_ListFriends extends React.Component {
     constructor(states) {
@@ -18,6 +19,18 @@ class cpmContainsRight_ListFriends extends React.Component {
                 {name: 'vl', status: 'busy', id: '3'}
             ]
         }
+    }
+
+    checklogin() {
+        api.getAllUser(response => {
+            console.log("oke", response);
+            return response;
+        })
+    }
+
+    async getUsers() {
+        var con = await this.checklogin();
+
     }
 
     render() {
@@ -37,15 +50,6 @@ class cpmContainsRight_ListFriends extends React.Component {
             </List>
         );
     }
-}
-
-
-function HomeIcon(props) {
-    return (
-        <SvgIcon {...props}>
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-        </SvgIcon>
-    );
 }
 
 export default cpmContainsRight_ListFriends;
