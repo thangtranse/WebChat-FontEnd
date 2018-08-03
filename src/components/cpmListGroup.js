@@ -5,21 +5,27 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Grid from '@material-ui/core/Grid';
-import Dashboard from './Dashboard';
-import {TableBody, TableRow, TextTableCell} from "evergreen-ui";
+import Avatar from '@material-ui/core/Avatar';
 
 class cpmListGroup extends React.Component {
     constructor(props) {
         super(props);
+        this.clickRoom = this.clickRoom.bind(this);
+    }
+
+    clickRoom(event) {
+        console.log(event.target)
     }
 
     showRoom = (listRooms) => {
         let channel = [];
         let group = [];
-        let messages = []
+        let messages = [];
+
         listRooms.forEach(item => {
             switch (item.t) {
                 case 'd':
+                    console.log(item);
                     messages.push(item);
                     break;
                 case 'c':
@@ -30,35 +36,44 @@ class cpmListGroup extends React.Component {
                     break;
             }
         })
+
         return (
             <List subheader={<li/>} className="cmpListGroup">
                 <li key="channel">
                     <ul>
                         <ListSubheader>Channel</ListSubheader>
-                        {channel.map(item => (
-                            <ListItem key={item._id}>
-                                <ListItemText primary={item.name}/>
-                            </ListItem>
-                        ))}
+                        {
+                            channel.map(item => (
+                                <ListItem key={item._id} id={item._id} onClick={this.clickRoom} className="cursor">
+                                    {console.log(item)}
+                                    <Avatar alt="Remy Sharp">T</Avatar>
+                                    <ListItemText primary={item.name} id={item._id}/>
+                                </ListItem>
+                            ))
+                        }
                     </ul>
                 </li>
                 <li key="group">
                     <ul>
                         <ListSubheader>Group</ListSubheader>
-                        {group.map(item => (
-                            <ListItem key={item._id}>
-                                <ListItemText primary={item.name}/>
-                            </ListItem>
-                        ))}
+                        {
+                            group.map(item => (
+                                <ListItem key={item._id} className="cursor">
+                                    <Avatar alt="Remy Sharp">T</Avatar>
+                                    <ListItemText primary={item.name}/>
+                                </ListItem>
+                            ))
+                        }
                     </ul>
                 </li>
                 <li key="messages">
                     <ul>
-                        <ListSubheader>Messages</ListSubheader>
+                        <ListSubheader className="textLabel">Messages</ListSubheader>
                         {
                             messages.map(item => (
-                                <ListItem key={item._id}>
-                                    <ListItemText primary={item.name}/>
+                                <ListItem key={item.lastMessage.u._id} className="cursor">
+                                    <Avatar alt="Remy Sharp">T</Avatar>
+                                    <ListItemText primary={item.lastMessage.u.name}/>
                                 </ListItem>
                             ))
                         }

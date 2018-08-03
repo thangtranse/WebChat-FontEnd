@@ -9,29 +9,27 @@ var managerCache = require('../ctrl/managerCache');
 class cpmContainsLeft extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            listGroup: []
-        }
-        this.checkLogin = this.checkLogin.bind(this);
-        this.checkLogin();
+
+        // this.checkLogin = this.checkLogin.bind(this);
+        // this.checkLogin();
     }
 
-    async checkLogin() {
-        var bool = await managerCache.checkSession();
-        if (bool) {
-            api.getRoom(request => {
-                this.setState({
-                    listGroup: request
-                })
-            })
-        }
-    }
+    // async checkLogin() {
+    //     var bool = await managerCache.checkSession();
+    //     if (bool) {
+    //         api.getRoom(request => {
+    //             this.setState({
+    //                 listGroup: request
+    //             })
+    //         })
+    //     }
+    // }
 
     render() {
         return (
             <div>
                 <CpmBoxInfo infor={this.props.container}></CpmBoxInfo>
-                <CpmListGroup listgroup={this.state.listGroup}></CpmListGroup>
+                <CpmListGroup listgroup={this.props.rooms}></CpmListGroup>
             </div>
         );
     }

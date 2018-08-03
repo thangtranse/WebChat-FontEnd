@@ -11,7 +11,7 @@ import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
 import Loadable from 'react-loadable';
 
-var useApi = require('./ctrl/useApi');
+var api = require('./ctrl/useApi');
 var managerCache = require('./ctrl/managerCache');
 
 const initState = {
@@ -21,10 +21,12 @@ const initState = {
     name: "",
     userId: "",
     authToken: "",
+    listGroup: [],
     isLogin: false
 }
 // Test
 var load = () => `<div>Load</div>`;
+
 const CpmContainsRight_ListFriends = Loadable({
     loader: () => import('./components/cpmContainsRight_ListFriends'),
     loading: load,
@@ -38,6 +40,7 @@ class App extends React.Component {
         this.state = initState;
         this.inputChange = this.inputChange.bind(this);
         this.login = this.login.bind(this);
+        this.getRoom = this.getRoom.bind(this);
     }
 
     // Nhận sự kiện onChange
@@ -50,7 +53,7 @@ class App extends React.Component {
     }
 
     login() {
-        useApi.login(document.getElementById("username").value, document.getElementById("password").value, response => {
+        api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
             this.setState({
                 open: false,
                 name: response.data.data.me.name,
@@ -62,7 +65,18 @@ class App extends React.Component {
             sessionStorage.setItem('userId', response.data.data.userId);
             sessionStorage.setItem('username', response.data.data.me.username);
             sessionStorage.setItem('name', response.data.data.me.name);
+
+            // Lấy danh sách phòng
+            this.getRoom();
         });
+    }
+
+    getRoom() {
+        api.getRoom(request => {
+            this.setState({
+                listGroup: request
+            })
+        })
     }
 
     componentWillMount() {
@@ -76,15 +90,17 @@ class App extends React.Component {
                 authToken: sessionStorage.getItem("authToken"),
                 isLogin: true
             })
+            this.getRoom();
         }
     }
+
 
     render() {
         return (
             <div>
                 <Grid container spacing={0}>
                     <Grid item xs={2} className="colorbackground_blue leftBox">
-                        <CpmContainsLeft container={this.state}/>
+                        <CpmContainsLeft container={this.state} rooms={this.state.listGroup}/>
                     </Grid>
                     <Grid item xs={8}>
                         <CpmContainsMiddle_BoxChat/>
