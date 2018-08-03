@@ -6,31 +6,27 @@ class useApi {
         axios.post('/login', {
             username: username,
             password: password,
+        }).then(response => {
+            console.log(response)
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
         })
-            .then(response => {
-                console.log(response)
-                return callback(response)
-            })
-            .catch(function (message) {
-                console.log(message);
-            })
     }
 
-    logout(uid, token, callback) {
+    logout(callback) {
         axios({
             method: 'POST',
             url: '/logout',
             headers: {
-                'X-Auth-Token': token,
-                'X-User-Id': uid
+                'X-Auth-Token': sessionStorage.getItem("authToken"),
+                'X-User-Id': sessionStorage.getItem("userId")
             }
         }).then(response => {
-            console.log(response)
             return callback(response);
+        }).catch(function (message) {
+            console.log(message);
         })
-            .catch(function (message) {
-                console.log(message);
-            })
     }
 
     register(username, password, name, email, callback) {
@@ -46,23 +42,22 @@ class useApi {
         }).then(response => {
             console.log(response)
             return callback(response)
+        }).catch(function (message) {
+            console.log(message);
         })
-            .catch(function (message) {
-                console.log(message);
-            })
     }
 
-    getRoom(authToken, userID, callback) {
+    getRoom(callback) {
         axios({
             method: 'GET',
             url: '/rooms.get',
             headers: {
-                'X-Auth-Token': authToken,
-                'X-User-Id': userID
+                'X-Auth-Token': sessionStorage.getItem("authToken"),
+                'X-User-Id': sessionStorage.getItem("userId")
             }
         }).then(response => {
             console.log(response.data.update)
-            return callback(response)
+            return callback(response.data.update)
         })
             .catch(function (message) {
                 console.log(message);
@@ -86,10 +81,9 @@ class useApi {
         }).then(response => {
             console.log(response)
             return callback(response)
+        }).catch(function (message) {
+            console.log(message);
         })
-            .catch(function (message) {
-                console.log(message);
-            })
     }
 
     createChannel(authToken, userID, channelName, callback) {
@@ -106,10 +100,24 @@ class useApi {
         }).then(response => {
             console.log(response)
             return callback(response)
+        }).catch(function (message) {
+            console.log(message);
         })
-            .catch(function (message) {
-                console.log(message);
-            })
+    }
+
+    getAllUser(callback) {
+        axios({
+            method: 'GET',
+            url: '/users.list',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            }
+        }).then(response => {
+            return callback(response);
+        }).catch(function (message) {
+            console.log(message);
+        })
     }
 
 }
