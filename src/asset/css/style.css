@@ -1,3 +1,7 @@
+* {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
 .colorbackground_blue {
     background: #283593;
 }
@@ -60,7 +64,7 @@
 .boxContainsMessages {
     overflow:auto;
     height: 80vh;
-    
+
 }
 
 .inputTextField {
@@ -92,13 +96,13 @@
     padding: 10px 0px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
 }
 
 .boxMyMessage {
     padding: 10px 0px;
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
 }
 
 .disable {

@@ -1,14 +1,11 @@
 class managerCache {
-    constructor() {
-    }
+  constructor() {}
 
-    checkSession() {
-        if (sessionStorage.getItem("authToken") && sessionStorage.getItem("userId")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+  checkSession() {
+    return (
+      sessionStorage.getItem("authToken") && sessionStorage.getItem("userId")
+    );
+  }
 }
 
 module.exports = new managerCache();

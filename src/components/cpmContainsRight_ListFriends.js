@@ -1,13 +1,14 @@
-import React from 'react';
-import '../asset/css/style.css'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import LensIcon from '@material-ui/icons/Lens'
+import _ from "lodash";
+import React from "react";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import LensIcon from "@material-ui/icons/Lens";
 import Avatar from "@material-ui/core/Avatar";
 
-var api = require('../ctrl/useApi');
+import "../asset/css/style.css";
+var api = require("../ctrl/useApi");
 
 class cpmContainsRight_ListFriends extends React.Component {
     constructor(states) {
@@ -16,71 +17,47 @@ class cpmContainsRight_ListFriends extends React.Component {
             allUser: [],
             userInChannel: [],
             isAllUser: true
-        }
+        };
         api.getAllUser(response => {
-            this.setState({allUser: response.data.result})
-        })
+            this.setState({ allUser: response.data.result });
+        });
     }
 
     async getUsers() {
         var con = await this.checklogin();
-
     }
 
     render() {
-        if(this.state.isAllUser){
-            return (
-                <div>
-                    <button onClick={() => this.setState({isAllUser: true })}> All User </button>
-                    <button onClick={() => this.setState({isAllUser: false})}> User in channel </button>
-                    <List component="nav">
-                        {this.state.allUser.map(user => (
-                            <ListItem button key={`section_${user._id}`}>
-                                <ListItemIcon>
-                                    <Avatar>H</Avatar>
-                                </ListItemIcon>
-                                <ListItemText primary={user.username}/>
-                                <ListItemIcon>
-                                    {user.status == 'online' ? <LensIcon color="secondary"/> : <LensIcon/>}
-                                </ListItemIcon>
-                            </ListItem>
-                        ))}
-                    </List>
-                </div>
-            );
-        }
-        else{
-            if(this.props.userInChannel){
-                return (
-                    <div>
-                        <button onClick={() => this.setState({isAllUser: true })}> All User </button>
-                        <button onClick={() => this.setState({isAllUser: false})}> User in channel </button>
-                        <List component="nav">
-                            {this.props.userInChannel.data.members.map(user => (
-                                <ListItem button key={`section_${user._id}`}>
-                                    <ListItemIcon>
-                                        <Avatar>H</Avatar>
-                                    </ListItemIcon>
-                                    <ListItemText primary={user.username}/>
-                                    <ListItemIcon>
-                                        {user.status == 'online' ? <LensIcon color="secondary"/> : <LensIcon/>}
-                                    </ListItemIcon>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </div>
-                );
-            }
-            else{
-                return(
-                    <div>
-                        <button onClick={() => this.setState({isAllUser: true })}> All User </button>
-                        <button onClick={() => this.setState({isAllUser: false})}> User in channel </button>
-                        <List component="nav"/>
-                    </div>
-                )
-            }         
-        }
+        const data =
+            (this.state.isAllUser && this.state.allUser) ||
+            _.get(this.props.userInChannel, "data.members") ||
+            [];
+        return (
+            <div>
+                <button onClick={() => this.setState({ isAllUser: true })}>
+                    All User
+                </button>
+                <button onClick={() => this.setState({ isAllUser: false })}>
+                    User in channel
+                </button>
+                <List component="nav">
+                    {data.map(user => (
+                        <ListItem button key={`section_${user._id}`}>
+                            <ListItemIcon>
+                                <Avatar>H</Avatar>
+                            </ListItemIcon>
+                            <ListItemText primary={user.username} />
+                            <ListItemIcon>
+                                {user.status == "online"
+                                    ? <LensIcon color="secondary"/>
+                                    : <LensIcon/>
+                                }
+                            </ListItemIcon>
+                        </ListItem>
+                    ))}
+                </List>
+            </div>
+        );
     }
 }
 

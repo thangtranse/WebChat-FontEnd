@@ -7,6 +7,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Grid from '@material-ui/core/Grid';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
 var api = require('../ctrl/useApi');
 
@@ -17,7 +21,19 @@ class cpmBoxInfo extends React.Component {
         this.logout = this.logout.bind(this);
         this.getProp = this.getProp.bind(this);
         this.getProp();
+        this.state = {
+            anchorEl: null,
+            message:'',
+        };
     }
+
+    handleClick = event => {
+        this.setState({anchorEl: event.currentTarget});
+    };
+
+    handleClose = () => {
+        this.setState({anchorEl: null});
+    };
 
 
     logout() {
@@ -39,9 +55,23 @@ class cpmBoxInfo extends React.Component {
                                 {this.props.infor.name}
                             </label>
                         </div>
-                        <IconButton onClick={this.logout}>
-                            <ExitToApp color="primary" />
+                        <IconButton
+                            aria-owns={this.state.anchorEl ? 'simple-menu' : null}
+                            aria-haspopup="true"
+                            onClick={this.handleClick}
+                        >
+                            <ArrowDropDown color="error"/>
                         </IconButton>
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={this.state.anchorEl}
+                            open={Boolean(this.state.anchorEl)}
+                            onClose={this.handleClose}
+                        >
+                            <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                            <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                            <MenuItem onClick={this.logout}>Logout</MenuItem>
+                        </Menu>
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
