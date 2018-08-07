@@ -1,7 +1,30 @@
+
+{/*
+    List api:
+        1/ Authentication
+            - Login
+            - logout
+            - register: mặc định là user
+        2/ Rooms:
+            - getRoom: lấy ra danh sách room đã được add
+
+        3/ Channels:
+            - creatChannel
+            - getUserInChannel
+            - getChannelMessHistory
+
+        4/ Private Groups:
+
+
+        5/ Messages:
+            - sendMess
+*/}
+
 var axios = require('./request_api_rocket');
 
 class useApi {
 
+    // 1. Authentication
     login(username, password, callback) {
         axios.post('/login', {
             username: username,
@@ -14,7 +37,7 @@ class useApi {
         })
     }
 
-    logout(callback) {
+    logout() {
         axios({
             method: 'POST',
             url: '/logout',
@@ -23,9 +46,8 @@ class useApi {
                 'X-User-Id': sessionStorage.getItem("userId")
             }
         }).then(response => {
-            return callback(response);
-        }).catch(function (message) {
-            console.log(message);
+            sessionStorage.clear();
+            window.location.reload();
         })
     }
 
@@ -40,13 +62,14 @@ class useApi {
                 email: email
             }
         }).then(response => {
-            console.log(response)
             return callback(response)
         }).catch(function (message) {
             console.log(message);
         })
     }
 
+
+    // 2. Rooms
     getRoom(callback) {
         axios({
             method: 'GET',
@@ -56,7 +79,6 @@ class useApi {
                 'X-User-Id': sessionStorage.getItem("userId")
             }
         }).then(response => {
-            console.log(response.data.update)
             return callback(response.data.update)
         })
             .catch(function (message) {
@@ -64,28 +86,8 @@ class useApi {
             })
     }
 
-    sendMess(authToken, userID, roomID, msg, callback) {
-        axios({
-            method: 'POST',
-            url: '/chat.sendMessage',
-            headers: {
-                'X-Auth-Token': authToken,
-                'X-User-Id': userID
-            },
-            data: {
-                message: {
-                    rid: roomID,
-                    msg: msg
-                }
-            }
-        }).then(response => {
-            console.log(response)
-            return callback(response)
-        }).catch(function (message) {
-            console.log(message);
-        })
-    }
 
+    // 3. Channels
     createChannel(authToken, userID, channelName, callback) {
         axios({
             method: 'POST',
@@ -98,17 +100,16 @@ class useApi {
                 name: channelName
             }
         }).then(response => {
-            console.log(response)
             return callback(response)
         }).catch(function (message) {
             console.log(message);
         })
     }
 
-    getAllUser(callback) {
+    getUserInChannel(roomID, callback) {
         axios({
             method: 'GET',
-            url: '/users.list',
+            url: '/channels.members?roomId=' + roomID,
             headers: {
                 'X-Auth-Token': sessionStorage.getItem('authToken'),
                 'X-User-Id': sessionStorage.getItem('userId')
@@ -120,6 +121,91 @@ class useApi {
         })
     }
 
+    getAllUser(callback) {
+        axios({
+            method: 'GET',
+            url: '/directory?query={"type": "users"}',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            }
+        }).then(response => {
+            return callback(response);
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
+    getChannelMessHistory(roomID, callback) {
+        axios({
+            method: 'GET',
+            url: '/channels.history?roomId=' + roomID,
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            }
+        }).then(response => {
+            return callback(response)
+        })
+            .catch(function (message) {
+                console.log(message);
+            })
+    }
+
+    // 4. Private Groups
+
+    getGroupMessHistory(roomID, callback) {
+        axios({
+            method: 'GET',
+            url: '/groups.history?roomId=' + roomID,
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            }
+        }).then(response => {
+            return callback(response)
+        })
+            .catch(function (message) {
+                console.log(message);
+            })
+    }
+
+    getUserInGroup(roomID, callback) {
+        axios({
+            method: 'GET',
+            url: '/channels.members?roomId=' + roomID,
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            }
+        }).then(response => {
+            return callback(response);
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
+    // 5.  Messages
+    sendMess(roomID, msg, callback) {
+        axios({
+            method: 'POST',
+            url: '/chat.sendMessage',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            },
+            data: {
+                message: {
+                    rid: roomID,
+                    msg: msg
+                }
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
 }
 
 module.exports = new useApi();

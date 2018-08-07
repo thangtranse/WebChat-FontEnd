@@ -10,11 +10,11 @@ import Avatar from '@material-ui/core/Avatar';
 class cpmListGroup extends React.Component {
     constructor(props) {
         super(props);
-        this.clickRoom = this.clickRoom.bind(this);
-    }
-
-    clickRoom(event) {
-        console.log(event.target)
+        this.state = {
+            rid:'GENERAL'
+        }
+        
+        this.showRoom(this.props.listgroup)
     }
 
     showRoom = (listRooms) => {
@@ -25,7 +25,6 @@ class cpmListGroup extends React.Component {
         listRooms.forEach(item => {
             switch (item.t) {
                 case 'd':
-                    console.log(item);
                     messages.push(item);
                     break;
                 case 'c':
@@ -44,8 +43,12 @@ class cpmListGroup extends React.Component {
                         <ListSubheader>Channel</ListSubheader>
                         {
                             channel.map(item => (
-                                <ListItem key={item._id} id={item._id} onClick={this.clickRoom} className="cursor">
-                                    {console.log(item)}
+                                <ListItem 
+                                    key={item._id} 
+                                    id={item._id} 
+                                    className="cursor" 
+                                    onClick={() => this.props.getChannel(item._id)}
+                                >
                                     <Avatar alt="Remy Sharp">T</Avatar>
                                     <ListItemText primary={item.name} id={item._id}/>
                                 </ListItem>
@@ -55,10 +58,13 @@ class cpmListGroup extends React.Component {
                 </li>
                 <li key="group">
                     <ul>
-                        <ListSubheader>Group</ListSubheader>
+                        <ListSubheader>Private Group</ListSubheader>
                         {
                             group.map(item => (
-                                <ListItem key={item._id} className="cursor">
+                                <ListItem key={item._id} 
+                                className="cursor" 
+                                onClick={() => this.props.getChannel(item._id)}
+                            >
                                     <Avatar alt="Remy Sharp">T</Avatar>
                                     <ListItemText primary={item.name}/>
                                 </ListItem>
@@ -68,12 +74,16 @@ class cpmListGroup extends React.Component {
                 </li>
                 <li key="messages">
                     <ul>
-                        <ListSubheader className="textLabel">Messages</ListSubheader>
+                        <ListSubheader className="textLabel">Direct Messages</ListSubheader>
                         {
                             messages.map(item => (
-                                <ListItem key={item.lastMessage.u._id} className="cursor">
+                                <ListItem 
+                                    key={item._id} 
+                                    className="cursor" 
+                                    onClick={() => this.props.getChannel(item._id)}
+                                >
                                     <Avatar alt="Remy Sharp">T</Avatar>
-                                    <ListItemText primary={item.lastMessage.u.name}/>
+                                    <ListItemText primary={item.name}/>
                                 </ListItem>
                             ))
                         }

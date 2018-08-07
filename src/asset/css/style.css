@@ -31,6 +31,9 @@
 
 .cmpListGroup ul {
     padding: 0px;
+    height: 20hv;
+    overflow: auto;
+
 }
 
 .cmpListGroup ul li {
@@ -55,7 +58,9 @@
 }
 
 .boxContainsMessages {
+    overflow:auto;
     height: 80vh;
+    
 }
 
 .inputTextField {
@@ -88,6 +93,12 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+}
+
+.boxMyMessage {
+    padding: 10px 0px;
+    display: flex;
+    flex-direction: row;
 }
 
 .disable {

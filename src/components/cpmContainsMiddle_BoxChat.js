@@ -9,13 +9,16 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Mood from '@material-ui/icons/Mood';
 import CpmBoxMyMessage from './cpmBoxMyMessage';
 import CpmBoxReceiveMessage from './cpmBoxReceiveMessage';
+import CpmInputMessages from './cpmInputMessages';
+
 
 class cpmContainsMiddle_BoxChat extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             anchorEl: null,
+            message:'',
         };
     }
 
@@ -27,32 +30,35 @@ class cpmContainsMiddle_BoxChat extends React.Component {
         this.setState({anchorEl: null});
     };
 
+    showMessage = (messHistory) => {
+        if(messHistory){
+            return(
+                messHistory.data.messages.reverse().map(mess => (this.messageHandle(mess)))
+            )
+        }
+    }
+
+    messageHandle = (message) => {
+        if(message.u._id === sessionStorage.getItem('userId')){  
+            return(
+                <CpmBoxMyMessage key={message._id} user={message.u.username} message = {message.msg}/>              
+            )
+        }
+        else{           
+            return(
+                <CpmBoxReceiveMessage key={message._id} user={message.u.username} message = {message.msg}/>
+            )
+        }
+    }
+
     render() {
         return (
             <div>
                 <Grid container spacing={0} className="cpmContainsMiddle_BoxChat">
-                    <div className="boxContainsMessages">
-                        <CpmBoxMyMessage/>
-                        <CpmBoxReceiveMessage/>
+                    <div className="boxContainsMessages">                       
+                        {this.showMessage(this.props.messHistory)}
                     </div>
-                    <div className="boxInputChat">
-                        <div className="inputTextField">
-                            <TextField
-                                id="textarea"
-                                placeholder="Nhập tin nhắn"
-                                multiline
-                                margin="normal"
-                                rows="4"
-                                fullWidth
-                            />
-                        </div>
-                        <div className="boxBtnSendMessage">
-                            <Button variant="contained" color="primary">
-                                Send
-                                <Icon>send</Icon>
-                            </Button>
-                        </div>
-                    </div>
+                    <CpmInputMessages rid={this.props.rid}/>
                 </Grid>
                 <Grid>
                     <div>
