@@ -5,7 +5,6 @@ import Api from './Api';
 import registerServiceWorker from './registerServiceWorker';
 import {BrowserRouter, Route, Link} from "react-router-dom";
 
-
 ReactDOM.render(
     <BrowserRouter>
         <div>
