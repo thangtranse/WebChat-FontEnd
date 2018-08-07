@@ -11,23 +11,23 @@ class cpmBoxMyMessage extends React.Component {
 
     render() {
         return (
-            <Grid container spacing={0}>
-                <Grid item xs={1}>
-                    <div className="boxAvatarMessage">
-                        <Avatar>OP</Avatar>
-                    </div>
-                </Grid>
-                <Grid item>
-                    <Paper elevation={1} className="boxMessage">
-                        <Typography variant="headline" component="h3">
-                            This is a sheet of paper.
-                        </Typography>
-                        <Typography component="p">
-                            Paper can be used to build su1232131321rface or other elements for your application.
-                        </Typography>
-                    </Paper>
-                </Grid>
+            <Grid container spacing={0} className="boxReceiveMessage">
+            <Grid item>
+                <Paper elevation={1} className="boxMessage">
+                    <Typography variant="headline" component="h3">
+                    {this.props.user}
+                    </Typography>
+                    <Typography component="p">
+                    {this.props.message}
+                    </Typography>
+                </Paper>
             </Grid>
+            <Grid item xs={1}>
+                <div className="boxAvatarMessage">
+                    <Avatar>OP</Avatar>
+                </div>
+            </Grid>
+        </Grid>
         );
     }
 }

@@ -1,7 +1,6 @@
 import React from 'react';
 import './asset/css/style.css';
 import Grid from '@material-ui/core/Grid';
-import CpmContainsLeft from './components/cpmContainsLeft';
 import CpmContainsMiddle_BoxChat from './components/cpmContainsMiddle_BoxChat';
 import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
@@ -11,10 +10,11 @@ import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
 import Loadable from 'react-loadable';
 
+import CpmListGroup from './components/cpmListGroup';
+import CpmBoxInfo from "./components/cpmBoxInfo";
 var api = require('./ctrl/useApi');
 var managerCache = require('./ctrl/managerCache');
-
-var DDPClient = require("ddp-client");
+var useApiRealTime = require('./ctrl/useApiRealTime');
 var ddpclient;
 
 const initState = {
@@ -26,7 +26,8 @@ const initState = {
     authToken: "",
     listGroup: [],
     isLogin: false,
-    realtime: {}
+    messHistory: null,
+    userInChannel: null,
 }
 // Test
 var load = () => `<div>Load</div>`;
@@ -45,43 +46,9 @@ class App extends React.Component {
         this.inputChange = this.inputChange.bind(this);
         this.login = this.login.bind(this);
         this.getRoom = this.getRoom.bind(this);
-        this.btnThu = this.btnThu.bind(this);
+        this.getChannel = this.getChannel.bind(this);
 
-        ddpclient = new DDPClient({
-            // All properties optional, defaults shown
-            host: "https://ten-lua.herokuapp.com",
-            port: 7677,
-            ssl: false,
-            autoReconnect: true,
-            autoReconnectTimer: 500,
-            maintainCollections: true,
-            ddpVersion: '1',  // ['1', 'pre2', 'pre1'] available
-            // uses the SockJs protocol to create the connection
-            // this still uses websockets, but allows to get the benefits
-            // from projects like meteorhacks:cluster
-            // (for load balancing and service discovery)
-            // do not use `path` option when you are using useSockJs
-            useSockJs: true,
-            // Use a full url instead of a set of `host`, `port` and `ssl`
-            // do not set `useSockJs` option if `url` is used
-            url: 'wss://ten-lua.herokuapp.com/websocket'
-        });
-
-        ddpclient.connect((error, wasReconnect) => {
-            // If autoReconnect is true, this callback will be invoked each time
-            // a server connection is re-established
-            if (error) {
-                console.log('DDP connection error!');
-                return;
-            }
-
-            if (wasReconnect) {
-                console.log('Reestablishment of a connection.');
-            }
-
-            console.log('connected!');
-
-        }); // Clone connects
+        ddpclient = new useApiRealTime();
     }
 
     // Nhận sự kiện onChange
@@ -95,42 +62,6 @@ class App extends React.Component {
 
     login() {
         api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
-            ddpclient.call(
-                'login',             // name of Meteor Method being called
-                [
-                    { "resume": response.data.data.authToken }
-                ],            // parameters to send to Meteor Method
-                (err, result) => {   // callback which returns the method call results
-                    if (err) {
-                        console.log("Looix ow day: ", err);
-                    } else {
-                        this.setState({
-                            realtime: result
-                        });
-                        console.log('Regiter Comple: ', result);
-
-                        ddpclient.subscribe(
-                            'posts',                  // name of Meteor Publish function to subscribe to
-                            [
-                                {
-                                    "msg": "sub",
-                                    "id": result.id,
-                                    "name": "onpoen",
-                                    "params": ["event", false]
-                                }
-                            ],                       // any parameters used by the Publish function
-                            function () {             // callback when the subscription is complete
-                                console.log('1122 posts complete:');
-                            }
-                        );
-
-                    }
-                },
-                () => {              // callback which fires when server has finished
-                    console.log('updated');  // sending any updated documents as a result of
-                    console.log('chajy ngay di: ', ddpclient.host);  // calling this method
-                }
-            );
             this.setState({
                 open: false,
                 name: response.data.data.me.name,
@@ -142,17 +73,68 @@ class App extends React.Component {
             sessionStorage.setItem('userId', response.data.data.userId);
             sessionStorage.setItem('username', response.data.data.me.username);
             sessionStorage.setItem('name', response.data.data.me.name);
+
+            // // Đăng ký Connect
+            // ddpclient.login(sessionStorage.getItem('authToken'), (err, result) => {
+            //     if (err) {
+            //         console.log("Login Realtime Fail ", err);
+            //     } else {
+            //         console.log("Realtime running ", result);
+            //     }
+            // });
+
             // Lấy danh sách phòng
             this.getRoom();
-
         });
     }
+
 
     getRoom() {
         api.getRoom(request => {
             this.setState({
                 listGroup: request
             })
+        })
+    }
+
+    msgHandle = (resp) => {
+        switch (resp.msg) {
+            case "changed":
+                api.getChannelMessHistory(resp.fields.eventName, resp => {
+                    this.setState({ messHistory: resp })
+                })
+        }
+    }
+
+    getChannel(roomId) {
+        this.setState({ roomId: roomId })
+
+        let newID = ddpclient.subscribelRoom(roomId)
+
+        this.setState({ idApirealtime: newID });
+
+        // Đăng ký Connect
+        ddpclient.login(sessionStorage.getItem('authToken'), (err, result) => {
+            if (err) {
+                console.log("Login Realtime Fail ", err);
+            } else {
+                console.log("Realtime running ", result);
+            }
+        });
+
+        ddpclient.listen((resp) => {
+            console.log(resp)
+            let temp = JSON.parse(resp)
+            this.msgHandle(temp)
+        });
+
+        // Lấy data message
+        api.getChannelMessHistory(roomId, resp => {
+            this.setState({ messHistory: resp })
+        })
+        // list user trong room
+        api.getUserInChannel(roomId, resp => {
+            this.setState({ userInChannel: resp })
         })
     }
 
@@ -171,78 +153,34 @@ class App extends React.Component {
         }
     }
 
-    btnThu() {
-        console.log(this.state._id);
-        // ddpclient.subscribe("stream-room-messages",
-        //     [{
-        //         "msg": "method",
-        //         "id": "42",
-        //         "method": "createPrivateGroup",
-        //         "params": ["example-private-room", [], false]
-        //     }],
-        //     function () {
-        //         console.log(ddpclient.collections);
-        //         console.log("Subscription Complete.\n");
-        //         // Display the stream on console so we can see its working
-        //         console.log("\nStarting live-stream of messages.:\n");
-        //         ddpclient.on("message", function (msg) {
-        //             console.log("Subscription Msg 12 : " + msg);
-        //         });
-
-        //     }
-        // )
-
-        ddpclient.subscribe("stream-room-messages",
-            [
-                
-                        "BuNa5dsqtTehuNErR",
-                        false
-                
-            ],
-            function () {
-                console.log(ddpclient.collections);
-                console.log("Subscription Complete.\n");
-                // Display the stream on console so we can see its working
-                console.log("\nStarting live-stream of messages.:\n");
-
-                ddpclient.on("message", function (msg) {
-                    console.log("Subscription Msg 12 : " + msg);
-                });
-
-            }
-        )
-    }
-
-
-
     render() {
-        var observer = ddpclient.observe("posts");
-        observer.onpoen = function (id) {
-            console.log("[ADDED] to " + observer.name + ":  " + id);
-        };
-        return (
-            <div>
-                <Grid>
-                    <Button onClick={this.btnThu}>RUN websocket</Button>
-                </Grid>
-                <Grid container spacing={0}>
-                    <Grid item xs={2} className="colorbackground_blue leftBox">
-                        <CpmContainsLeft container={this.state} rooms={this.state.listGroup} />
+
+        if (this.state.isLogin) {
+            return (
+                <div>
+                    <Grid container spacing={0}>
+                        <Grid item xs={2} className="colorbackground_blue leftBox">
+
+                            <CpmBoxInfo infor={this.state} ></CpmBoxInfo>
+                            <CpmListGroup listgroup={this.state.listGroup} getChannel={this.getChannel}></CpmListGroup>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <CpmContainsMiddle_BoxChat rid={this.state.roomId} messHistory={this.state.messHistory} />
+                        </Grid>
+                        <Grid item xs={2} className="colorbackground_silver">
+                            <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={8}>
-                        <CpmContainsMiddle_BoxChat />
-                    </Grid>
-                    <Grid item xs={2} className="colorbackground_silver">
-                        <CpmContainsRight_ListFriends />
-                    </Grid>
-                </Grid>
-                <Dialog open={this.state.open}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    aria-labelledby="alert-dialog-slide-title"
-                    aria-describedby="alert-dialog-slide-description">
-                    <div className="boxLogin">
-                        <DialogContentText style={{ textAlign: 'center' }} id="alert-dialog-slide-description">
+                </div>
+            )
+        }
+        else {
+            return (
+                <div>
+                    <Dialog open={this.state.open}
+                        TransitionComponent={Transition}
+                        keepMounted>
+                        <div className="boxLogin">
                             <h1> Đăng Nhập </h1>
                             <TextField id="username"
                                 label="Username"
@@ -254,17 +192,14 @@ class App extends React.Component {
                                 type="password"
                                 ref="password"
                                 margin="normal" />
-                        </DialogContentText>
-                    </div>
-                    <DialogActions>
-                        <Button onClick={this.handleClose}
-                            color="primary"> Facebook </Button>
-                        <Button onClick={this.handleClose} color="primary">Đăng ký </Button>
-                        <Button onClick={this.login} color="primary"> Đăng nhập </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-        );
+                        </div>
+                        <DialogActions>
+                            <Button onClick={this.login} color="primary"> Đăng nhập </Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+            )
+        }
     }
 }
 

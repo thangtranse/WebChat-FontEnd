@@ -21,9 +21,7 @@ class cpmBoxInfo extends React.Component {
 
 
     logout() {
-        api.logout(response => {
-            sessionStorage.clear();
-        });
+        api.logout();
     }
 
     getProp() {
@@ -42,13 +40,13 @@ class cpmBoxInfo extends React.Component {
                             </label>
                         </div>
                         <IconButton onClick={this.logout}>
-                            <ExitToApp color="primary"/>
+                            <ExitToApp color="primary" />
                         </IconButton>
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>
                     <IconButton aria-label="Delete" disabled color="primary">
-                        <DeleteIcon/>
+                        <DeleteIcon />
                     </IconButton>
                     <IconButton color="secondary" aria-label="Add an alarm">
                         <Icon> alarm </Icon>

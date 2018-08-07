@@ -7,20 +7,14 @@
     "@material-ui/icons": "^2.0.0",
     "axios": "^0.18.0",
     "ddp-client": "^0.1.2",
-    "ddp-random": "^0.8.1-1",
     "evergreen-ui": "^3.2.4",
-    "express": "^4.16.3",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "react-loadable": "^5.4.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-router-native": "^4.3.0",
-    "react-scripts": "1.1.4",
-    "rocketchat": "^0.57.3-alpha",
-    "rocketchat-nodejs": "^0.1.2",
-    "unirest": "^0.5.1",
-    "websocket": "^1.0.26"
+    "react-scripts": "1.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
