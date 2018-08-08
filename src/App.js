@@ -29,6 +29,7 @@ const initState = {
     isLogin: false,
     messHistory: null,
     userInChannel: null,
+    
 }
 // Test
 var load = () => `<div>Load</div>`;
