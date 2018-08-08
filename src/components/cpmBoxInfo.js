@@ -43,15 +43,7 @@ class cpmBoxInfo extends React.Component {
                             <ExitToApp color="primary" />
                         </IconButton>
                     </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <IconButton aria-label="Delete" disabled color="primary">
-                        <DeleteIcon />
-                    </IconButton>
-                    <IconButton color="secondary" aria-label="Add an alarm">
-                        <Icon> alarm </Icon>
-                    </IconButton>
-                </Grid>
+                </Grid> 
             </Grid>
         );
     }

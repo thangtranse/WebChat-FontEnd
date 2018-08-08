@@ -11,9 +11,9 @@ class cpmListGroup extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rid:'GENERAL'
+            rid: 'GENERAL'
         }
-        
+
         this.showRoom(this.props.listgroup)
     }
 
@@ -25,6 +25,7 @@ class cpmListGroup extends React.Component {
         listRooms.forEach(item => {
             switch (item.t) {
                 case 'd':
+                    console.log(item);
                     messages.push(item);
                     break;
                 case 'c':
@@ -37,20 +38,20 @@ class cpmListGroup extends React.Component {
         })
 
         return (
-            <List subheader={<li/>} className="cmpListGroup">
+            <List subheader={<li />} className="cmpListGroup">
                 <li key="channel">
                     <ul>
                         <ListSubheader>Channel</ListSubheader>
                         {
                             channel.map(item => (
-                                <ListItem 
-                                    key={item._id} 
-                                    id={item._id} 
-                                    className="cursor" 
+                                <ListItem
+                                    key={item._id}
+                                    id={item._id}
+                                    className="cursor"
                                     onClick={() => this.props.getChannel(item._id)}
                                 >
                                     <Avatar alt="Remy Sharp">T</Avatar>
-                                    <ListItemText primary={item.name} id={item._id}/>
+                                    <ListItemText primary={item.name} id={item._id} />
                                 </ListItem>
                             ))
                         }
@@ -61,12 +62,12 @@ class cpmListGroup extends React.Component {
                         <ListSubheader>Private Group</ListSubheader>
                         {
                             group.map(item => (
-                                <ListItem key={item._id} 
-                                className="cursor" 
-                                onClick={() => this.props.getChannel(item._id)}
-                            >
+                                <ListItem key={item._id}
+                                    className="cursor"
+                                    onClick={() => this.props.getChannel(item._id)}
+                                >
                                     <Avatar alt="Remy Sharp">T</Avatar>
-                                    <ListItemText primary={item.name}/>
+                                    <ListItemText primary={item.name} />
                                 </ListItem>
                             ))
                         }
@@ -77,13 +78,13 @@ class cpmListGroup extends React.Component {
                         <ListSubheader className="textLabel">Direct Messages</ListSubheader>
                         {
                             messages.map(item => (
-                                <ListItem 
-                                    key={item._id} 
-                                    className="cursor" 
+                                <ListItem
+                                    key={item._id}
+                                    className="cursor"
                                     onClick={() => this.props.getChannel(item._id)}
                                 >
                                     <Avatar alt="Remy Sharp">T</Avatar>
-                                    <ListItemText primary={item.name}/>
+                                    <ListItemText id={item._id} />
                                 </ListItem>
                             ))
                         }
@@ -95,7 +96,7 @@ class cpmListGroup extends React.Component {
 
     render() {
         return (
-            <Grid container spacing={0}>
+            <Grid container spacing={0} className="scrollbar" >
                 <Grid item xs={12}>
                     {this.showRoom(this.props.listgroup)}
                 </Grid>

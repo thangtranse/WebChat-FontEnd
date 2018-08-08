@@ -6,6 +6,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import LensIcon from '@material-ui/icons/Lens'
 import Avatar from "@material-ui/core/Avatar";
+import Button from '@material-ui/core/Button';
 
 var api = require('../ctrl/useApi');
 
@@ -31,8 +32,8 @@ class cpmContainsRight_ListFriends extends React.Component {
         if(this.state.isAllUser){
             return (
                 <div>
-                    <button onClick={() => this.setState({isAllUser: true })}> All User </button>
-                    <button onClick={() => this.setState({isAllUser: false})}> User in channel </button>
+                    <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: true })}> All User </Button>
+                    <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: false})}> User in channel </Button>
                     <List component="nav">
                         {this.state.allUser.map(user => (
                             <ListItem button key={`section_${user._id}`}>
@@ -53,8 +54,8 @@ class cpmContainsRight_ListFriends extends React.Component {
             if(this.props.userInChannel){
                 return (
                     <div>
-                        <button onClick={() => this.setState({isAllUser: true })}> All User </button>
-                        <button onClick={() => this.setState({isAllUser: false})}> User in channel </button>
+                        <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: true })}> All User </Button>
+                        <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: false})}> User in channel </Button>
                         <List component="nav">
                             {this.props.userInChannel.data.members.map(user => (
                                 <ListItem button key={`section_${user._id}`}>
@@ -74,8 +75,8 @@ class cpmContainsRight_ListFriends extends React.Component {
             else{
                 return(
                     <div>
-                        <button onClick={() => this.setState({isAllUser: true })}> All User </button>
-                        <button onClick={() => this.setState({isAllUser: false})}> User in channel </button>
+                        <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: true })}> All User </Button>
+                        <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: false})}> User in channel </Button>
                         <List component="nav"/>
                     </div>
                 )

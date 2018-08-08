@@ -125,3 +125,14 @@
 .cursor{
     cursor: pointer;
 }
+
+.hidden{
+    display: none;
+}
+
+.scrollbar{
+    display: inline-block;
+    vertical-align: top;
+    height: 80vh;
+    overflow: auto;
+}
