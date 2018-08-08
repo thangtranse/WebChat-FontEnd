@@ -58,6 +58,38 @@ class useApiRealTime {
         ddpclient.on("message", (msg) => callback(msg))
     }
 
+    sendingFile(_filename, _filesize, _filetype, _roomID, _idFile, _url) {
+        // stept - thực hiện đăng ký
+        console.log(_filename + " - " + _filesize + " - " + _filetype + " - " + _roomID + " - " + _idFile + " - " + _url);
+        ddpclient.call('slingshot/uploadRequest',
+            [
+                'rocketchat-uploads',
+                {
+                    "name": _filename,
+                    "size": _filesize,
+                    "type": _filetype
+                },
+                { "rid": _roomID }
+            ],
+            (err, result) => {
+                if (err) {
+                    console.log("upload FIle erro", err);
+                } else {
+                    ddpclient.call('slingshot/uploadRequest',
+                        [
+                            'rocketchat-uploads',
+                            {
+                                "name": _filename,
+                                "size": _filesize,
+                                "type": _filetype
+                            },
+                            { "rid": _roomID }
+                        ], function (err, result) {
+                            console.log(err);
+                        });
+                }
+            });
+    }
 }
 
 module.exports = useApiRealTime;

@@ -73,15 +73,7 @@ class cpmBoxInfo extends React.Component {
                             <MenuItem onClick={this.logout}>Logout</MenuItem>
                         </Menu>
                     </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <IconButton aria-label="Delete" disabled color="primary">
-                        <DeleteIcon />
-                    </IconButton>
-                    <IconButton color="secondary" aria-label="Add an alarm">
-                        <Icon> alarm </Icon>
-                    </IconButton>
-                </Grid>
+                </Grid> 
             </Grid>
         );
     }

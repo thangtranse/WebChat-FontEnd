@@ -129,3 +129,17 @@
 .cursor{
     cursor: pointer;
 }
+<<<<<<< HEAD
+=======
+
+.hidden{
+    display: none;
+}
+
+.scrollbar{
+    display: inline-block;
+    vertical-align: top;
+    height: 80vh;
+    overflow: auto;
+}
+>>>>>>> UploadFile

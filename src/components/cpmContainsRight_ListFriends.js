@@ -6,6 +6,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import LensIcon from "@material-ui/icons/Lens";
 import Avatar from "@material-ui/core/Avatar";
+import Button from '@material-ui/core/Button';
 
 import "../asset/css/style.css";
 var api = require("../ctrl/useApi");
@@ -28,6 +29,7 @@ class cpmContainsRight_ListFriends extends React.Component {
     }
 
     render() {
+<<<<<<< HEAD
         const data =
             (this.state.isAllUser && this.state.allUser) ||
             _.get(this.props.userInChannel, "data.members") ||
@@ -58,6 +60,61 @@ class cpmContainsRight_ListFriends extends React.Component {
                 </List>
             </div>
         );
+=======
+        if(this.state.isAllUser){
+            return (
+                <div>
+                    <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: true })}> All User </Button>
+                    <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: false})}> User in channel </Button>
+                    <List component="nav">
+                        {this.state.allUser.map(user => (
+                            <ListItem button key={`section_${user._id}`}>
+                                <ListItemIcon>
+                                    <Avatar>H</Avatar>
+                                </ListItemIcon>
+                                <ListItemText primary={user.username}/>
+                                <ListItemIcon>
+                                    {user.status == 'online' ? <LensIcon color="secondary"/> : <LensIcon/>}
+                                </ListItemIcon>
+                            </ListItem>
+                        ))}
+                    </List>
+                </div>
+            );
+        }
+        else{
+            if(this.props.userInChannel){
+                return (
+                    <div>
+                        <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: true })}> All User </Button>
+                        <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: false})}> User in channel </Button>
+                        <List component="nav">
+                            {this.props.userInChannel.data.members.map(user => (
+                                <ListItem button key={`section_${user._id}`}>
+                                    <ListItemIcon>
+                                        <Avatar>H</Avatar>
+                                    </ListItemIcon>
+                                    <ListItemText primary={user.username}/>
+                                    <ListItemIcon>
+                                        {user.status == 'online' ? <LensIcon color="secondary"/> : <LensIcon/>}
+                                    </ListItemIcon>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </div>
+                );
+            }
+            else{
+                return(
+                    <div>
+                        <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: true })}> All User </Button>
+                        <Button variant="contained" color="primary" onClick={() => this.setState({isAllUser: false})}> User in channel </Button>
+                        <List component="nav"/>
+                    </div>
+                )
+            }         
+        }
+>>>>>>> UploadFile
     }
 }
 

@@ -24,11 +24,7 @@ class cpmContainsMiddle_BoxChat extends React.Component {
     render() {
         return (
             <div>
-                <Grid
-                    container
-                    spacing={0}
-                    className="cpmContainsMiddle_BoxChat"
-                >
+                <Grid container spacing={0} className="cpmContainsMiddle_BoxChat">
                     <div className="boxContainsMessages">
                         {this.showMessage(this.props.messHistory)}
                     </div>

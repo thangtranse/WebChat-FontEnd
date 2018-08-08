@@ -9,9 +9,10 @@ import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
 import Loadable from 'react-loadable';
-
 import CpmListGroup from './components/cpmListGroup';
 import CpmBoxInfo from "./components/cpmBoxInfo";
+import firebase from "firebase";
+import FileUploader from "react-firebase-file-uploader";
 var api = require('./ctrl/useApi');
 var managerCache = require('./ctrl/managerCache');
 var useApiRealTime = require('./ctrl/useApiRealTime');
@@ -47,6 +48,7 @@ class App extends React.Component {
         this.login = this.login.bind(this);
         this.getRoom = this.getRoom.bind(this);
         this.getChannel = this.getChannel.bind(this);
+        this.uploadFile = this.uploadFile.bind(this);
 
         ddpclient = new useApiRealTime();
     }
@@ -74,16 +76,6 @@ class App extends React.Component {
             sessionStorage.setItem('username', response.data.data.me.username);
             sessionStorage.setItem('name', response.data.data.me.name);
 
-            // // Đăng ký Connect
-            // ddpclient.login(sessionStorage.getItem('authToken'), (err, result) => {
-            //     if (err) {
-            //         console.log("Login Realtime Fail ", err);
-            //     } else {
-            //         console.log("Realtime running ", result);
-            //     }
-            // });
-
-            // Lấy danh sách phòng
             this.getRoom();
         });
     }
@@ -153,6 +145,37 @@ class App extends React.Component {
         }
     }
 
+    uploadFile(event) {
+        console.log("thắng");
+        console.log(event.target.files[0]);
+        var file = event.target.files[0];
+        var storageRef = firebase.storage().ref();
+        var uploadTask = storageRef.child('images/rivers.jpg').put(event.target.files[0]);
+        uploadTask.on('state_changed', (snapshot) => {
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            switch (snapshot.state) {
+                case firebase.storage.TaskState.PAUSED:
+                    console.log('Upload is paused');
+                    break;
+                case firebase.storage.TaskState.RUNNING:
+                    console.log('Upload is running');
+                    break;
+            }
+        }, function (error) {
+            console.log("Upload File Error");
+        }, () => {
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                // console.log('File available at', downloadURL);
+                // ddpclient.sendingFile(file.name, file.size, file.type, 'GENERAL', downloadURL, downloadURL);
+                api.sendMess(this.state.roomId, downloadURL, resp => {
+                    console.log(resp)
+                    document.getElementById("textarea").value = ''
+                })
+            });
+        });
+    }
+
     render() {
 
         if (this.state.isLogin) {
@@ -160,12 +183,11 @@ class App extends React.Component {
                 <div>
                     <Grid container spacing={0}>
                         <Grid item xs={2} className="colorbackground_blue leftBox">
-
                             <CpmBoxInfo infor={this.state} ></CpmBoxInfo>
                             <CpmListGroup listgroup={this.state.listGroup} getChannel={this.getChannel}></CpmListGroup>
                         </Grid>
                         <Grid item xs={8}>
-                            <CpmContainsMiddle_BoxChat rid={this.state.roomId} messHistory={this.state.messHistory} />
+                            <CpmContainsMiddle_BoxChat uploadFile={this.uploadFile} rid={this.state.roomId} messHistory={this.state.messHistory} />
                         </Grid>
                         <Grid item xs={2} className="colorbackground_silver">
                             <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} />

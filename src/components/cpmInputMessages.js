@@ -4,7 +4,6 @@ import '../asset/css/style.css'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
-
 const api = require('./../ctrl/useApi')
 
 class cpmInputMessage extends React.Component {
