@@ -28,7 +28,7 @@ class cpmContainsMiddle_BoxChat extends React.Component {
                     <div className="boxContainsMessages">
                         {this.showMessage(this.props.messHistory)}
                     </div>
-                    <CpmInputMessages rid={this.props.rid} />
+                    <CpmInputMessages uploadFile={this.props.uploadFile} rid={this.props.rid} />
                 </Grid>
             </div>
         );

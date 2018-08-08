@@ -29,7 +29,7 @@ const initState = {
     isLogin: false,
     messHistory: null,
     userInChannel: null,
-    
+
 }
 // Test
 var load = () => `<div>Load</div>`;
@@ -65,6 +65,15 @@ class App extends React.Component {
 
     login() {
         api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
+            // Đăng ký Connect
+            ddpclient.login(response.data.data.authToken, (err, result) => {
+                if (err) {
+                    console.log("Login Realtime Fail ", err);
+                } else {
+                    console.log("Realtime running ", result);
+
+                }
+            });
             this.setState({
                 open: false,
                 name: response.data.data.me.name,
@@ -76,7 +85,6 @@ class App extends React.Component {
             sessionStorage.setItem('userId', response.data.data.userId);
             sessionStorage.setItem('username', response.data.data.me.username);
             sessionStorage.setItem('name', response.data.data.me.name);
-
             this.getRoom();
         });
     }
@@ -106,15 +114,8 @@ class App extends React.Component {
 
         this.setState({ idApirealtime: newID });
 
-        // Đăng ký Connect
-        ddpclient.login(sessionStorage.getItem('authToken'), (err, result) => {
-            if (err) {
-                console.log("Login Realtime Fail ", err);
-            } else {
-                console.log("Realtime running ", result);
-            }
-        });
 
+        ddpclient.subscribeNotifyUser(sessionStorage.getItem("userId"));
         ddpclient.listen((resp) => {
             console.log(resp)
             let temp = JSON.parse(resp)
@@ -151,7 +152,7 @@ class App extends React.Component {
         console.log(event.target.files[0]);
         var file = event.target.files[0];
         var storageRef = firebase.storage().ref();
-        var uploadTask = storageRef.child('images/rivers.jpg').put(event.target.files[0]);
+        var uploadTask = storageRef.child(`images/${file.name}`).put(event.target.files[0]);
         uploadTask.on('state_changed', (snapshot) => {
             var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log('Upload is ' + progress + '% done');
@@ -167,10 +168,10 @@ class App extends React.Component {
             console.log("Upload File Error");
         }, () => {
             uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                // console.log('File available at', downloadURL);
+                console.log('File available at', downloadURL);
                 // ddpclient.sendingFile(file.name, file.size, file.type, 'GENERAL', downloadURL, downloadURL);
                 api.sendMess(this.state.roomId, downloadURL, resp => {
-                    console.log(resp)
+                    console.log("upload thành công", resp)
                     document.getElementById("textarea").value = ''
                 })
             });
