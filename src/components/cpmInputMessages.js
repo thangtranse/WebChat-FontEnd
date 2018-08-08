@@ -1,6 +1,7 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
+
 import '../asset/css/style.css'
+import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
@@ -11,7 +12,7 @@ class cpmInputMessage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            message:'',
+            message: '',
         };
     }
 
@@ -22,32 +23,53 @@ class cpmInputMessage extends React.Component {
         })
     }
 
-    messageInput = (event) =>{
-        this.setState({message: event.target.value})
+    messageInput = (event) => {
+        this.setState({ message: event.target.value })
     }
-    
-    render(){
-        return(
-            <div className="boxInputChat">
-                <div className="inputTextField">
-                    <TextField
-                        id="textarea"
-                        placeholder="Nhập tin nhắn"
-                        multiline
-                        margin="normal"
-                        rows="4"
-                        fullWidth
-                        onChange={this.messageInput}
-                    />
-                    
-                </div>
-                <div className="boxBtnSendMessage">
-                    <Button type="submit" variant="contained" color="primary" onClick={() => this.sendMessage()}>
-                        Send
+
+    render() {
+        return (
+            <Grid container spacing={0}>
+                <Grid item xs={12}>
+                    <div className="boxInputChat">
+                        <div className="inputTextField">
+                            <TextField
+                                id="textarea"
+                                placeholder="Nhập tin nhắn"
+                                multiline
+                                margin="normal"
+                                rows="4"
+                                fullWidth
+                                onChange={this.messageInput}
+                            />
+
+                        </div>
+                        <div className="boxBtnSendMessage">
+                            <Button type="submit" variant="contained" color="primary" onClick={() => this.sendMessage()}>
+                                Send
                         <Icon>send</Icon>
-                    </Button>
-                </div>
-            </div>
+                            </Button>
+                        </div>
+                    </div>
+                </Grid>
+                <Grid item xs={12}>
+                    <div>
+                        <input
+                            onChange={this.props.uploadFile}
+                            accept="image/*"
+                            id="contained-button-file"
+                            multiple
+                            type="file"
+                            className="hidden"
+                        />
+                        <label htmlFor="contained-button-file">
+                            <Button variant="contained" component="span">
+                                Upload
+                        </Button>
+                        </label>
+                    </div>
+                </Grid>
+            </Grid>
         )
     }
 }
