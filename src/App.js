@@ -29,7 +29,7 @@ const initState = {
     isLogin: false,
     messHistory: null,
     userInChannel: null,
-    
+
 }
 // Test
 var load = () => `<div>Load</div>`;
@@ -65,6 +65,15 @@ class App extends React.Component {
 
     login() {
         api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
+            // Đăng ký Connect
+            ddpclient.login(response.data.data.authToken, (err, result) => {
+                if (err) {
+                    console.log("Login Realtime Fail ", err);
+                } else {
+                    console.log("Realtime running ", result);
+
+                }
+            });
             this.setState({
                 open: false,
                 name: response.data.data.me.name,
@@ -76,7 +85,6 @@ class App extends React.Component {
             sessionStorage.setItem('userId', response.data.data.userId);
             sessionStorage.setItem('username', response.data.data.me.username);
             sessionStorage.setItem('name', response.data.data.me.name);
-
             this.getRoom();
         });
     }
@@ -106,15 +114,8 @@ class App extends React.Component {
 
         this.setState({ idApirealtime: newID });
 
-        // Đăng ký Connect
-        ddpclient.login(sessionStorage.getItem('authToken'), (err, result) => {
-            if (err) {
-                console.log("Login Realtime Fail ", err);
-            } else {
-                console.log("Realtime running ", result);
-            }
-        });
 
+        ddpclient.subscribeNotifyUser(sessionStorage.getItem("userId"));
         ddpclient.listen((resp) => {
             console.log(resp)
             let temp = JSON.parse(resp)
