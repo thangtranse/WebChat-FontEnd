@@ -56,13 +56,11 @@ const styles = theme => ({
     },
     appBar: {
         marginLeft: drawerWidth,
-        [theme.breakpoints.up('md')]: {
-            width: `calc(100% - ${drawerWidth}px)`,
-        },
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-around',
-        alignItems: 'center'
+        alignItems: 'center',
+        
     },
     navIconHide: {
         [theme.breakpoints.up('md')]: {
@@ -78,8 +76,7 @@ const styles = theme => ({
     },
     content: {
         flexGrow: 1,
-        backgroundColor: theme.palette.background.default,
-        padding: theme.spacing.unit * 3,
+        backgroundColor: theme.palette.background.default
     },
 });
 
@@ -256,7 +253,6 @@ class App extends React.Component {
         if (this.state.isLogin) {
             return (
                 <div className={classes.root}>
-
                     <AppBar className={classes.appBar}>
                         <Toolbar>
                             <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_left} className={classes.navIconHide}>

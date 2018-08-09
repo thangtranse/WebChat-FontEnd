@@ -142,9 +142,45 @@
     overflow: auto;
 }
 
-.cmpListGroup ul li{
-    padding-left:10px;
-}
 .imgCover{
     
+}
+
+@media (min-width: 960px) {
+
+}
+
+@media (min-width: 600px) {
+
+}
+
+.cmpListGroup ul li{
+    padding-left:10px;
+    padding-right: 5px;
+}
+
+.listfriends{
+    padding-left: 10px !important;
+    padding-right: 5px !important;
+}
+
+.navColor button{
+    color: #fff !important;
+}
+
+.avatart{
+    margin-right:5px !important;
+}
+
+.username{
+    padding: 0px 5px !important;
+}
+
+.status{
+    font-size:15px !important;
+}
+
+.cmpListGroup ul li div:last-child{
+    padding-left:7px;
+    padding-right: 5px;
 }

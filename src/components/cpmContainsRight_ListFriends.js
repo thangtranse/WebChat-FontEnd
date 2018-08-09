@@ -29,7 +29,7 @@ class cpmContainsRight_ListFriends extends React.Component {
     }
 
     async getUsers() {
-        var con = await this.checklogin();
+        // var con = await this.checklogin();
     }
 
     handleChange = () => {
@@ -40,18 +40,18 @@ class cpmContainsRight_ListFriends extends React.Component {
         const data = (this.state.isAllUser && this.state.allUser) || _.get(this.props.userInChannel, "data.members") || [];
         return (
             <div>
-                <BottomNavigation value={this.state.value} onChange={this.handleChange} showLabels className="colorbackground_silver">
+                <BottomNavigation value={this.state.value} onChange={this.handleChange} showLabels className="colorbackground_silver navColor">
                     <BottomNavigationAction label="Recents" icon={<RestoreIcon />} onClick={() => this.setState({ isAllUser: true })} />
                     <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} onClick={() => this.setState({ isAllUser: false })} />
                 </BottomNavigation>
                 <List component="nav">
                     {data.map(user => (
-                        <ListItem button key={`section_${user._id}`}>
+                        <ListItem button key={`section_${user._id}`} className="listfriends">
                             <ListItemIcon>
-                                <Avatar>H</Avatar>
+                                <Avatar className="avatart">H</Avatar>
                             </ListItemIcon>
-                            <ListItemText primary={user.username} />
-                            <ListItemIcon>
+                            <ListItemText primary={user.username} className="username" />
+                            <ListItemIcon className="status">
                                 {user.status == "online"
                                     ? <LensIcon color="secondary" />
                                     : <LensIcon />
