@@ -36,6 +36,7 @@ class useApiRealTime {
     subscribe(_name, _arrayParameter) {
         ddpclient.subscribe(_name, _arrayParameter);
     }
+
     /**
      * Lắng nghe Channel General    
      */
@@ -45,6 +46,8 @@ class useApiRealTime {
     }
     /**
      * Đăng ký lắng nghe ROOM
+     * 
+     * @param {*} _roomID 
      */
     subscribelRoom(_roomID) {
         return ddpclient.subscribe("stream-room-messages", [_roomID, true]);
@@ -60,13 +63,39 @@ class useApiRealTime {
      */
     subscribeNotifyUser(_userID) {
         console.log("lắng nghe 01");
-        return ddpclient.subscribe("stream-notify-user", [`${_userID}/rooms-changed`, false], (id) => {console.log("lắng nghe", id)});
+        return ddpclient.subscribe("stream-notify-user", [`${_userID}/rooms-changed`, false], (id) => { console.log("lắng nghe", id) });
     }
 
+    /**
+     * Lắng nghe người dùng nói chuyện
+     */
+    subscribeNotifyRoom(_idRoom, _username){
+        ddpclient.call("stream-notify-room", [`${_idRoom}/typing`, _username, true], (id) => { console.log("lắng nghe", id) });
+    }
+    /**
+     * Lắng nghe người dùng nói chuyện
+     */
+    subscribeActionRoom(_idRoom, _username){
+        ddpclient.call("stream-notify-room", [`${_idRoom}/typing`, _username, true], (id) => { console.log("lắng nghe", id) });
+    }
+
+    /**
+     * CHI SẼ GỌI ĐẠI BÀNG
+     * ĐẠI BÀNG KHÔNG NHẬN TIN...
+     * 
+     * * @param {*} _id id kênh lắng nghe
+     */
     unSubscriptions(_id) {
         ddpclient.subscribe("stream-room-messages", { "msg": "unsub", "id": _id });
     }
 
+    /**
+     * CHI SẼ GỌI ĐẠI BÀNG
+     * ĐẠI BÀNG NGHE RÕ...
+     * 
+     * Lắng nghe Rocket trả giá trị về
+     * @param {*} callback 
+     */
     listen(callback) {
         ddpclient.on("message", (msg) => callback(msg))
     }

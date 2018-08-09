@@ -3,11 +3,11 @@
 }
 
 .colorbackground_blue {
-    background: #283593;
+    background: #444753;
 }
 
 .colorbackground_silver {
-    background: #283593;
+    background: #444753 !important;
 }
 
 .leftBox {
@@ -17,9 +17,10 @@
 .cpmBoxInfo {
     min-height: 80px;
     max-height: auto;
-    background: #1A237E;
+    background: #444753;
     padding: 14px 10px;
     width: 100%;
+    border-bottom: 1px solid #fff;
 }
 
 .imgBoxInfo {
@@ -139,4 +140,11 @@
     vertical-align: top;
     height: 80vh;
     overflow: auto;
+}
+
+.cmpListGroup ul li{
+    padding-left:10px;
+}
+.imgCover{
+    
 }
