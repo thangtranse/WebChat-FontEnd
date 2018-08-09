@@ -15,7 +15,7 @@ class cpmContainsMiddle_BoxChat extends React.Component {
                     user={message.u.username}
                     message={message.msg}
                     isSender={message.u._id === sessionStorage.getItem("userId")}
-                />
+                />    
             ));
         }
     };
