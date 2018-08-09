@@ -1,23 +1,31 @@
 import React from 'react';
 import './asset/css/style.css';
-import Grid from '@material-ui/core/Grid';
-import CpmContainsMiddle_BoxChat from './components/cpmContainsMiddle_BoxChat';
-import DialogContentText from "@material-ui/core/DialogContentText";
 import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
 import Loadable from 'react-loadable';
-import CpmListGroup from './components/cpmListGroup';
-import CpmBoxInfo from "./components/cpmBoxInfo";
+import Grid from '@material-ui/core/Grid';
 import firebase from "firebase";
-import FileUploader from "react-firebase-file-uploader";
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Hidden from '@material-ui/core/Hidden';
+import MenuIcon from '@material-ui/icons/Menu';
+import CpmBoxInfo from './components/cpmBoxInfo';
+import CpmListGroup from './components/cpmListGroup';
+import CpmContainsRight_ListFriends from './components/cpmContainsRight_ListFriends';
+import CpmContainsMiddle_BoxChat from './components/cpmContainsMiddle_BoxChat';
 var api = require('./ctrl/useApi');
 var managerCache = require('./ctrl/managerCache');
 var useApiRealTime = require('./ctrl/useApiRealTime');
 var ddpclient;
-
+const drawerWidth = 240;
 const initState = {
     open: true,
     username: "",
@@ -29,15 +37,47 @@ const initState = {
     isLogin: false,
     messHistory: null,
     userInChannel: null,
-    isConnect: false
+    isConnect: false,
+    mobileOpen_left: false,
+    mobileOpen_right: false
 }
 // Test
 var load = () => `<div>Load</div>`;
 
-const CpmContainsRight_ListFriends = Loadable({
-    loader: () => import('./components/cpmContainsRight_ListFriends'),
-    loading: load,
-    timeout: 500000
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+        height: '100%',
+        zIndex: 1,
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex',
+        width: '100%',
+    },
+    appBar: {
+        marginLeft: drawerWidth,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        
+    },
+    navIconHide: {
+        [theme.breakpoints.up('md')]: {
+            display: 'none',
+        },
+    },
+    toolbar: theme.mixins.toolbar,
+    drawerPaper: {
+        width: drawerWidth,
+        [theme.breakpoints.up('md')]: {
+            position: 'relative',
+        },
+    },
+    content: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.default
+    },
 });
 
 class App extends React.Component {
@@ -72,6 +112,13 @@ class App extends React.Component {
             });
         }
     }
+
+    handleDrawerToggle_left = () => {
+        this.setState(state => ({ mobileOpen_left: !state.mobileOpen_left }));
+    };
+    handleDrawerToggle_right = () => {
+        this.setState(state => ({ mobileOpen_right: !state.mobileOpen_right }));
+    };
 
     // Nhận sự kiện onChange
     inputChange(event) {
@@ -128,6 +175,7 @@ class App extends React.Component {
     getChannel(roomId) {
         this.setState({ roomId: roomId })
         this.setState({ idApirealtime: newID });
+
         
         // Đăng ký Connect
         this.connectDDP(resp => {
@@ -197,7 +245,7 @@ class App extends React.Component {
                     console.log('Upload is running');
                     break;
             }
-        }, function (error) {
+        }, function () {
             console.log("Upload File Error");
         }, () => {
             uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
@@ -211,23 +259,80 @@ class App extends React.Component {
         });
     }
 
-    render() {
+    testFunction() {
+        ddpclient.subscribeNotifyRoom('GENERAL', sessionStorage.getItem("username"));
+    }
 
+    render() {
+        const { classes, theme } = this.props;
         if (this.state.isLogin) {
             return (
-                <div>
-                    <Grid container spacing={0}>
-                        <Grid item xs={2} className="colorbackground_blue leftBox">
-                            <CpmBoxInfo infor={this.state} ></CpmBoxInfo>
-                            <CpmListGroup listgroup={this.state.listGroup} getChannel={this.getChannel}></CpmListGroup>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <CpmContainsMiddle_BoxChat uploadFile={this.uploadFile} rid={this.state.roomId} messHistory={this.state.messHistory} />
-                        </Grid>
-                        <Grid item xs={2} className="colorbackground_silver">
-                        <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} getDirectRoom={this.getDirectRoom}/>
-                        </Grid>
-                    </Grid>
+                <div className={classes.root}>
+                    <AppBar className={classes.appBar}>
+                        <Toolbar>
+                            <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_left} className={classes.navIconHide}>
+                                <MenuIcon />
+                            </IconButton>
+                        </Toolbar>
+                        <Typography variant="title" color="inherit" noWrap>
+                            Responsive drawer
+                        </Typography>
+                        <Toolbar>
+                            <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_right} className={classes.navIconHide}>
+                                <MenuIcon />
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+
+                    <Hidden mdUp>
+                        <Drawer variant="temporary" anchor={'left'} open={this.state.mobileOpen_left} onClose={this.handleDrawerToggle_left}
+                            classes={{ paper: classes.drawerPaper, }}
+                            ModalProps={{ keepMounted: true, }}>
+                            <div className="colorbackground_blue leftBox">
+                                <CpmBoxInfo infor={this.state} ></CpmBoxInfo>
+                                <CpmListGroup listgroup={this.state.listGroup} getChannel={this.getChannel}></CpmListGroup>
+                            </div>
+                        </Drawer>
+                    </Hidden>
+                    <Hidden smDown implementation="css">
+                        <Drawer variant="permanent" open classes={{ paper: classes.drawerPaper, }}>
+                            <div className="colorbackground_blue leftBox">
+                                <CpmBoxInfo infor={this.state} ></CpmBoxInfo>
+                                <CpmListGroup listgroup={this.state.listGroup} getChannel={this.getChannel}></CpmListGroup>
+                            </div>
+                        </Drawer>
+                    </Hidden>
+
+                    <main className={classes.content}>
+                        <CpmContainsMiddle_BoxChat uploadFile={this.uploadFile} rid={this.state.roomId} messHistory={this.state.messHistory} />
+                    </main>
+
+                    <Hidden mdUp>
+                        <Drawer
+                            variant="temporary"
+                            anchor={'right'}
+                            open={this.state.mobileOpen_right}
+                            onClose={this.handleDrawerToggle_right}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                            ModalProps={{
+                                keepMounted: true, // Better open performance on mobile.
+                            }}
+                        >
+                            <div className="colorbackground_silver">
+                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} />
+                            </div>
+                        </Drawer>
+                    </Hidden>
+                    <Hidden smDown implementation="css">
+                        <Drawer variant="permanent" open classes={{ paper: classes.drawerPaper, }}>
+                            <div className="colorbackground_silver">
+                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} />
+                            </div>
+                        </Drawer>
+                    </Hidden>
+
                 </div>
             )
         }
@@ -264,4 +369,9 @@ function Transition(props) {
     return <Slide direction="up" {...props} />;
 }
 
-export default App;
+App.propTypes = {
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles, { withTheme: true })(App);
