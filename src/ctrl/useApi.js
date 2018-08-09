@@ -21,6 +21,10 @@
 
         5/ Messages:
             - sendMess
+            - deleteMessage
+            - getMessageInfo
+            - reactMessage
+            - editMessage
 */}
 
 var axios = require('./request_api_rocket');
@@ -299,6 +303,81 @@ class useApi {
             console.log(message);
         })
     }
+
+    deleteMessage(roomId, msgId, callback) {
+        axios({
+            method: 'POST',
+            url: '/chat.delete',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            },
+            data: {
+                roomId: roomId,
+                msgId: msgId,
+                asUser: "true"      // Quy định chỉ người gửi mới được xóa tn của họ
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
+    getMessageInfo(msgId, callback) {
+        axios({
+            method: 'GET',
+            url: '/chat.getMessage?msgId=' + msgId,
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
+    reactMessage(msgId, emoji, callback) {
+        axios({
+            method: 'POST',
+            url: '/chat.react',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            },
+            data: {
+                messageId: msgId,
+                emoji: emoji
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
+    editMessage(roomId, msgId, text, callback){
+        axios({
+            method: 'POST',
+            url: '/chat.update',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            },
+            data: {
+                roomId: roomId,
+                messageId: msgId,
+                text: text
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
 }
 
 module.exports = new useApi();
