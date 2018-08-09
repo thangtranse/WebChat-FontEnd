@@ -5,6 +5,7 @@
             - Login
             - logout
             - register: mặc định là user
+        
         2/ Rooms:
             - getRoom: lấy ra danh sách room đã được add
 
@@ -12,9 +13,11 @@
             - creatChannel
             - getUserInChannel
             - getChannelMessHistory
+            - leaveChannel
 
-        4/ Private Groups:
-
+        4/ Direct Message ( IM ):
+            - createIM
+            - getImHistory
 
         5/ Messages:
             - sendMess
@@ -81,23 +84,80 @@ class useApi {
         }).then(response => {
             return callback(response.data.update)
         })
-            .catch(function (message) {
-                console.log(message);
-            })
+        .catch(function (message) {
+            console.log(message);
+        })
     }
 
 
     // 3. Channels
-    createChannel(authToken, userID, channelName, callback) {
+    createChannel(channelName, listUser, callback) {
         axios({
             method: 'POST',
             url: '/channels.create',
             headers: {
-                'X-Auth-Token': authToken,
-                'X-User-Id': userID
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
             },
             data: {
-                name: channelName
+                name: channelName,
+                members: listUser
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
+    leaveChannel(roomId, callback){
+        axios({
+            method: 'POST',
+            url: '/channels.leave',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            },
+            data: {
+                roomId: roomId
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }   
+
+    inviteToChannel(roomId, userId, callback) {
+        axios({
+            method: 'POST',
+            url: '/channels.kick',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            },
+            data: {
+                roomId: roomId,
+                userId: userId
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
+    kickFromChannel(roomId, userId, callback) {
+        axios({
+            method: 'POST',
+            url: '/channels.invite',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            },
+            data: {
+                roomId: roomId,
+                userId: userId
             }
         }).then(response => {
             return callback(response)
@@ -153,6 +213,39 @@ class useApi {
     }
 
     // 4. Private Groups
+
+    createIM(username, callback) {
+        axios({
+            method: 'POST',
+            url: '/im.create',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            },
+            data: {
+                username: username
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
+
+    getImHistory(roomId, callback) {
+        axios({
+            method: 'GET',
+            url: '/im.history?roomId=' + roomId,
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            }
+        }).then(response => {
+            return callback(response)
+        }).catch(function (message) {
+            console.log(message);
+        })
+    }
 
     getGroupMessHistory(roomID, callback) {
         axios({

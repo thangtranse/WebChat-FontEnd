@@ -11,7 +11,6 @@ class cpmListGroup extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rid: 'GENERAL'
         }
 
         this.showRoom(this.props.listgroup)
@@ -25,7 +24,6 @@ class cpmListGroup extends React.Component {
         listRooms.forEach(item => {
             switch (item.t) {
                 case 'd':
-                    console.log(item);
                     messages.push(item);
                     break;
                 case 'c':

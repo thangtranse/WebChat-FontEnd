@@ -29,7 +29,7 @@ const initState = {
     isLogin: false,
     messHistory: null,
     userInChannel: null,
-
+    isConnect: false
 }
 // Test
 var load = () => `<div>Load</div>`;
@@ -54,6 +54,18 @@ class App extends React.Component {
         ddpclient = new useApiRealTime();
     }
 
+    connectDDP = () => {
+        ddpclient = new useApiRealTime();
+        ddpclient.login(sessionStorage.getItem("authToken"), (err, result) => {
+            if (err) {
+                console.log("Login Realtime Fail ", err);
+            } else {
+                console.log("Realtime running ", result);
+            }
+        });
+        
+    }
+
     // Nhận sự kiện onChange
     inputChange(event) {
         console.log(event.target.id)
@@ -66,12 +78,11 @@ class App extends React.Component {
     login() {
         api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
             // Đăng ký Connect
-            ddpclient.login(response.data.data.authToken, (err, result) => {
+            ddpclient.login(sessionStorage.getItem("authToken"), (err, result) => {
                 if (err) {
                     console.log("Login Realtime Fail ", err);
                 } else {
                     console.log("Realtime running ", result);
-
                 }
             });
             this.setState({
@@ -88,7 +99,6 @@ class App extends React.Component {
             this.getRoom();
         });
     }
-
 
     getRoom() {
         api.getRoom(request => {
@@ -109,18 +119,27 @@ class App extends React.Component {
 
     getChannel(roomId) {
         this.setState({ roomId: roomId })
-
-        let newID = ddpclient.subscribelRoom(roomId)
-
         this.setState({ idApirealtime: newID });
+        
+        if (!this.state.isConnect){
+            ddpclient.login(sessionStorage.getItem("authToken"), (err, result) => {
+                if (err) {
+                    console.log("Login Realtime Fail ", err);
+                } else {
+                    console.log("Realtime running ", result);
+                }
+            });
+            this.setState({isConnect: true})
+            ddpclient.subscribeNotifyUser(sessionStorage.getItem("userId"));
+            ddpclient.listen((resp) => {
+                console.log(resp)
+                let temp = JSON.parse(resp)
+                this.msgHandle(temp)
+            });
+        }
 
-
-        ddpclient.subscribeNotifyUser(sessionStorage.getItem("userId"));
-        ddpclient.listen((resp) => {
-            console.log(resp)
-            let temp = JSON.parse(resp)
-            this.msgHandle(temp)
-        });
+        
+        let newID = ddpclient.subscribelRoom(roomId)
 
         // Lấy data message
         api.getChannelMessHistory(roomId, resp => {

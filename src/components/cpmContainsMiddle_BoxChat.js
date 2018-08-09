@@ -8,16 +8,15 @@ import CpmInputMessages from "./cpmInputMessages";
 class cpmContainsMiddle_BoxChat extends React.Component {
     showMessage = messHistory => {
         if (messHistory) {
-            return messHistory.data.messages
-                .reverse()
-                .map(message => (
-                    <CpmMessageItem
-                        key={message._id}
-                        user={message.u.username}
-                        message={message.msg}
-                        isSender={message.u._id === sessionStorage.getItem("userId")}
-                    />
-                ));
+            let listmess = messHistory.data.messages.reverse()
+            return listmess.map(message => (
+                <CpmMessageItem
+                    key={message._id}
+                    user={message.u.username}
+                    message={message.msg}
+                    isSender={message.u._id === sessionStorage.getItem("userId")}
+                />
+            ));
         }
     };
 
