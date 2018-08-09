@@ -94,16 +94,23 @@ class App extends React.Component {
         ddpclient = new useApiRealTime();
     }
 
-    connectDDP = () => {
-        ddpclient = new useApiRealTime();
-        ddpclient.login(sessionStorage.getItem("authToken"), (err, result) => {
-            if (err) {
-                console.log("Login Realtime Fail ", err);
-            } else {
-                console.log("Realtime running ", result);
-            }
-        });
-
+    connectDDP = (callback) => {
+        if (!this.state.isConnect){
+            ddpclient.login(sessionStorage.getItem("authToken"), (err, result) => {
+                if (err) {
+                    console.log("Login Realtime Fail ", err);
+                } else {
+                    console.log("Realtime Direct running ", result);
+                }
+            });
+            this.setState({isConnect: true})
+            ddpclient.subscribeNotifyUser(sessionStorage.getItem("userId"));
+            ddpclient.listen((resp) => {
+                console.log(resp)
+                let temp = JSON.parse(resp)
+                return callback(temp)
+            });
+        }
     }
 
     handleDrawerToggle_left = () => {
@@ -124,14 +131,6 @@ class App extends React.Component {
 
     login() {
         api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
-            // Đăng ký Connect
-            ddpclient.login(sessionStorage.getItem("authToken"), (err, result) => {
-                if (err) {
-                    console.log("Login Realtime Fail ", err);
-                } else {
-                    console.log("Realtime running ", result);
-                }
-            });
             this.setState({
                 open: false,
                 name: response.data.data.me.name,
@@ -158,9 +157,18 @@ class App extends React.Component {
     msgHandle = (resp) => {
         switch (resp.msg) {
             case "changed":
-                api.getChannelMessHistory(resp.fields.eventName, resp => {
-                    this.setState({ messHistory: resp })
-                })
+                // Direct 
+                if(resp.fields.eventName.length > 25){
+                    api.getImHistory(resp.fields.eventName, resp => {
+                        this.setState({ messHistory: resp })
+                    })
+                }
+                // Channel
+                else{
+                    api.getChannelMessHistory(resp.fields.eventName, resp => {
+                        this.setState({ messHistory: resp })
+                    })
+                }
         }
     }
 
@@ -168,33 +176,41 @@ class App extends React.Component {
         this.setState({ roomId: roomId })
         this.setState({ idApirealtime: newID });
 
-        if (!this.state.isConnect) {
-            ddpclient.login(sessionStorage.getItem("authToken"), (err, result) => {
-                if (err) {
-                    console.log("Login Realtime Fail ", err);
-                } else {
-                    console.log("Realtime running ", result);
-                }
-            });
-            this.setState({ isConnect: true })
-            ddpclient.subscribeNotifyUser(sessionStorage.getItem("userId"));
-            ddpclient.listen((resp) => {
-                console.log(resp)
-                let temp = JSON.parse(resp)
-                this.msgHandle(temp)
-            });
-        }
-
-
+        
+        // Đăng ký Connect
+        this.connectDDP(resp => {
+            this.msgHandle(resp)
+        })        
+        
         let newID = ddpclient.subscribelRoom(roomId)
 
         // Lấy data message
         api.getChannelMessHistory(roomId, resp => {
+            console.log(resp)
             this.setState({ messHistory: resp })
         })
         // list user trong room
         api.getUserInChannel(roomId, resp => {
             this.setState({ userInChannel: resp })
+        })
+    }
+
+    getDirectRoom = (partnerId) => {
+        // Đăng ký Connect
+        this.connectDDP(resp => {
+            this.msgHandle(resp)
+        }) 
+
+        // tạo phòng chat Direct 
+        api.createIM(partnerId, resp => {
+            this.setState({ roomId: resp.data.room._id })
+
+            let newID = ddpclient.subscribelRoom(resp.data.room._id)
+            this.setState({ idApirealtime: newID });
+
+            api.getImHistory(resp.data.room._id, resp=>{
+                this.setState({ messHistory: resp })
+            })
         })
     }
 
@@ -214,7 +230,6 @@ class App extends React.Component {
     }
 
     uploadFile(event) {
-        console.log("thắng");
         console.log(event.target.files[0]);
         var file = event.target.files[0];
         var storageRef = firebase.storage().ref();
@@ -317,6 +332,7 @@ class App extends React.Component {
                             </div>
                         </Drawer>
                     </Hidden>
+
                 </div>
             )
         }

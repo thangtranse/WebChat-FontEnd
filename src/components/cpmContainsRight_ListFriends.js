@@ -46,7 +46,7 @@ class cpmContainsRight_ListFriends extends React.Component {
                 </BottomNavigation>
                 <List component="nav">
                     {data.map(user => (
-                        <ListItem button key={`section_${user._id}`} className="listfriends">
+                        <ListItem onClick={()=>this.props.getDirectRoom(user._id)} button key={`section_${user._id}`} className="listfriends">
                             <ListItemIcon>
                                 <Avatar className="avatart">H</Avatar>
                             </ListItemIcon>
