@@ -5,8 +5,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
-import Loadable from 'react-loadable';
-import Grid from '@material-ui/core/Grid';
 import firebase from "firebase";
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
@@ -176,9 +174,9 @@ class App extends React.Component {
         }
     }
 
-    getAllUser(){
+    getAllUser() {
         api.getAllUser(response => {
-            this.setState({ allUser: response.data.result });
+            this.setState({allUser: response.data.result});
         });
     }
 

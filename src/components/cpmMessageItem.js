@@ -5,7 +5,8 @@ import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
 import GridListTile from '@material-ui/core/GridListTile';
 import GridList from '@material-ui/core/GridList';
-function CpmMessageItem({ user, message, isSender }) {
+
+function CpmMessageItem({user, message, isSender}) {
 
     var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
     var regex = new RegExp(expression);
@@ -22,7 +23,7 @@ function CpmMessageItem({ user, message, isSender }) {
         <Grid item>
             <Paper elevation={1} className="boxMessage">
                 <Typography variant="caption">{user}</Typography>
-                <Typography variant="headline">{message.match(regex) ? attachFile(message) : message}</Typography>
+                <Typography>{message.match(regex) ? attachFile(message) : message}</Typography>
             </Paper>
         </Grid>
     );
@@ -33,11 +34,11 @@ function CpmMessageItem({ user, message, isSender }) {
             {avatar}
         </Grid>
     ) : (
-            <Grid container spacing={0} className="boxReceiveMessage">
-                {avatar}
-                {content}
-            </Grid>
-        );
+        <Grid container spacing={0} className="boxReceiveMessage">
+            {avatar}
+            {content}
+        </Grid>
+    );
 }
 
 /**
