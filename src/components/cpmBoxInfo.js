@@ -1,40 +1,36 @@
-import React from 'react';
-import '../asset/css/style.css';
-import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Grid from '@material-ui/core/Grid';
-import CreateNewFolder from '@material-ui/icons/CreateNewFolder';
-import Button from '@material-ui/core/Button';
+import React from "react";
+import "../asset/css/style.css";
+import Avatar from "@material-ui/core/Avatar";
+import IconButton from "@material-ui/core/IconButton";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Clear from '@material-ui/icons/Clear';
+import LensIcon from "@material-ui/icons/Lens";
+import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
 
-var api = require('../ctrl/useApi');
+import TableUser from './cpmTableUserForCreateChannel';
+import DropDownMenu from "./view/DropDownMenu";
+import STATUS from "../constant/status";
+var api = require("../ctrl/useApi");
 
 class cpmBoxInfo extends React.Component {
-
     constructor(props) {
         super(props);
+        console.log(this.props)
         this.logout = this.logout.bind(this);
         this.getProp = this.getProp.bind(this);
         this.getProp();
         this.state = {
-            anchorEl: null,
-            message: '',
-            open: false
+            open: false,
+            selected:[],
+            channelName:''
         };
     }
-
-
-
-    handleClose = () => {
-        this.setState({anchorEl: null});
-    };
-
 
     logout() {
         api.logout();
@@ -52,7 +48,28 @@ class cpmBoxInfo extends React.Component {
         this.setState({ open: false });
     };
 
-    CreateGroup() {
+    getSelectedUser = (selected) =>{
+        this.setState({selected: selected})
+    }
+
+    getChannelName = (event) =>{
+        this.setState({channelName: event.target.value})
+    }
+
+    createChannel = () => {
+        let channelName = this.state.channelName
+        let listUser = this.state.selected
+        api.createChannel(channelName, listUser, resp => {
+            console.log(resp)
+        })
+        this.handleClose()
+        this.setState({
+            selected: [],
+            channelNam: ''
+        })
+    }
+
+    createGroup() {
         return (
             <Dialog
                 open={this.state.open}
@@ -61,24 +78,24 @@ class cpmBoxInfo extends React.Component {
             >
                 <DialogTitle id="form-dialog-title">Tạo Cờ Rúp</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        ahihi
-                    </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="name"
-                        label="Email Address"
-                        type="email"
+                        id="channelName"
+                        label="Channel Name"
+                        type="text"
                         fullWidth
+                        onChange={this.getChannelName}
                     />
                 </DialogContent>
+                <TableUser listUser={this.state.listUser} getSelectedUser={this.getSelectedUser}/>
+
                 <DialogActions>
                     <Button onClick={this.handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={this.handleClose} color="primary">
-                        Subscribe
+                    <Button onClick={this.createChannel} color="primary">
+                        Create
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -86,29 +103,50 @@ class cpmBoxInfo extends React.Component {
     }
 
     render() {
+        const statusItems = Object.keys(STATUS)
+            .filter(status => status != "offline")
+            .map(status => {
+                return {
+                    value: (
+                        <React.Fragment>
+                            <LensIcon style={{ color: STATUS[status] }} />
+                            <span>{status}</span>
+                        </React.Fragment>
+                    ),
+                    onClick: () => {
+                        this.props.onStatusChange(status)
+                    }
+                };
+            });
+
         return (
             <Grid container spacing={0} className="cpmBoxInfo">
                 <Grid item xs={12}>
                     <Grid container className="boxInfo">
                         <div className="elemtfloat">
-                            <Avatar className="imgBoxInfo"> T </Avatar>
+                            <Avatar className="imgBoxInfo">
+                                <span>T</span>
+                                <LensIcon
+                                    className="statusIndicator"
+                                    style={{
+                                        color: STATUS[this.props.status]
+                                    }}
+                                />
+                            </Avatar>
                             <label className="textUser">
                                 {this.props.infor.name}
                             </label>
                         </div>
-                        <IconButton color="primary" aria-label="Add an alarm" onClick={this.logout}>
-                            <Clear></Clear>
-                        </IconButton>
-                    </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container>
-                        <div>
-                            <IconButton color="primary" aria-label="Add an alarm" onClick={this.handleClickOpen}>
-                                <CreateNewFolder></CreateNewFolder>
-                            </IconButton>
-                            {this.CreateGroup()}
-                        </div>
+                        <DropDownMenu
+                            component={IconButton}
+                            header={<ArrowDropDown color="error" />}
+                            items={[
+                                ...statusItems,
+                                { value: "Profile" },
+                                { value: "My account" },
+                                { value: "Logout", onClick: this.logout }
+                            ]}
+                        />
                     </Grid>
                 </Grid>
             </Grid>

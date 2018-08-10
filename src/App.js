@@ -39,6 +39,8 @@ const initState = {
     isConnect: false,
     mobileOpen_left: false,
     mobileOpen_right: false,
+    allUser: [],
+    status: "online",
     titleHeader: "Ten Lua Chat"
 }
 // Test
@@ -90,6 +92,7 @@ class App extends React.Component {
         this.getRoom = this.getRoom.bind(this);
         this.getChannel = this.getChannel.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
+        this.statusChange = this.statusChange.bind(this);
 
         ddpclient = new useApiRealTime();
     }
@@ -161,7 +164,7 @@ class App extends React.Component {
     msgHandle = (resp) => {
         switch (resp.msg) {
             case "changed":
-                // Direct 
+                // Direct
                 if (resp.fields.eventName.length > 25) {
                     api.getImHistory(resp.fields.eventName, resp => {
                         this.setState({messHistory: resp})
@@ -214,7 +217,7 @@ class App extends React.Component {
             titleHeader: name
         })
 
-        // tạo phòng chat Direct 
+        // tạo phòng chat Direct
         api.createIM(partnerId, resp => {
             this.setState({roomId: resp.data.room._id})
 
@@ -285,6 +288,17 @@ class App extends React.Component {
         ddpclient.subscribeNotifyRoom('GENERAL', sessionStorage.getItem("username"));
     }
 
+    statusChange(status) {
+        this.connectDDP(() => {})
+        ddpclient.changeStatus(
+            status,
+            (...args) => {
+                console.log(args);
+                this.setState({ status });
+            },
+        )
+    }
+
     render() {
         const {classes, theme} = this.props;
         if (this.state.isLogin) {
@@ -313,7 +327,7 @@ class App extends React.Component {
                                 classes={{paper: classes.drawerPaper,}}
                                 ModalProps={{keepMounted: true,}}>
                             <div className="colorbackground_blue leftBox">
-                                <CpmBoxInfo infor={this.state}></CpmBoxInfo>
+                                <CpmBoxInfo infor={this.state} status={this.state.status} onStatusChange={this.statusChange}></CpmBoxInfo>
                                 <CpmListGroup listgroup={this.state.listGroup}
                                               getChannel={this.getChannel}></CpmListGroup>
                             </div>
@@ -322,7 +336,7 @@ class App extends React.Component {
                     <Hidden smDown implementation="css">
                         <Drawer variant="permanent" open classes={{paper: classes.drawerPaper,}}>
                             <div className="colorbackground_blue leftBox">
-                                <CpmBoxInfo infor={this.state}></CpmBoxInfo>
+                                <CpmBoxInfo infor={this.state} status={this.state.status} onStatusChange={this.statusChange}></CpmBoxInfo>
                                 <CpmListGroup listgroup={this.state.listGroup}
                                               getChannel={this.getChannel}></CpmListGroup>
                             </div>
