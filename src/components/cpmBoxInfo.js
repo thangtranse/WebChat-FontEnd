@@ -3,14 +3,12 @@ import '../asset/css/style.css';
 import Avatar from '@material-ui/core/Avatar';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Grid from '@material-ui/core/Grid';
-import ExitToApp from '@material-ui/icons/ExitToApp';
-import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import CreateNewFolder from '@material-ui/icons/CreateNewFolder';
 
 var api = require('../ctrl/useApi');
 
@@ -73,7 +71,16 @@ class cpmBoxInfo extends React.Component {
                             <MenuItem onClick={this.logout}>Logout</MenuItem>
                         </Menu>
                     </Grid>
-                </Grid> 
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container>
+                        <div>
+                            <IconButton color="primary" aria-label="Add an alarm">
+                                <CreateNewFolder></CreateNewFolder>
+                            </IconButton>
+                        </div>
+                    </Grid>
+                </Grid>
             </Grid>
         );
     }
