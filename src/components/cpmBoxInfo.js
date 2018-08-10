@@ -3,9 +3,6 @@ import '../asset/css/style.css';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import CreateNewFolder from '@material-ui/icons/CreateNewFolder';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -14,6 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Clear from '@material-ui/icons/Clear';
 
 import TableUser from './cpmTableUserForCreateChannel';
 
@@ -36,9 +34,7 @@ class cpmBoxInfo extends React.Component {
         };
     }    
 
-    handleClick = event => {
-        this.setState({anchorEl: event.currentTarget});
-    };
+
 
     handleClose = () => {
         this.setState({anchorEl: null});
@@ -119,30 +115,16 @@ class cpmBoxInfo extends React.Component {
         return (
             <Grid container spacing={0} className="cpmBoxInfo">
                 <Grid item xs={12}>
-                    <Grid container>
+                    <Grid container className="boxInfo">
                         <div className="elemtfloat">
                             <Avatar className="imgBoxInfo"> T </Avatar>
                             <label className="textUser">
                                 {this.props.infor.name}
                             </label>
                         </div>
-                        <IconButton
-                            aria-owns={this.state.anchorEl ? 'simple-menu' : null}
-                            aria-haspopup="true"
-                            onClick={this.handleClick}
-                        >
-                            <ArrowDropDown color="error"/>
+                        <IconButton color="primary" aria-label="Add an alarm" onClick={this.logout}>
+                            <Clear></Clear>
                         </IconButton>
-                        <Menu
-                            id="simple-menu"
-                            anchorEl={this.state.anchorEl}
-                            open={Boolean(this.state.anchorEl)}
-                            onClose={this.handleClose}
-                        >
-                            <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={this.handleClose}>My account</MenuItem>
-                            <MenuItem onClick={this.logout}>Logout</MenuItem>
-                        </Menu>
                     </Grid>
                 </Grid>
                 <Grid item xs={12}>

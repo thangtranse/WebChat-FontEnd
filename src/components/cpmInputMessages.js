@@ -5,6 +5,8 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
+import Upload from '@material-ui/icons/AddToPhotos';
+
 const api = require('./../ctrl/useApi')
 
 class cpmInputMessage extends React.Component {
@@ -17,17 +19,17 @@ class cpmInputMessage extends React.Component {
     }
 
     sendMessage = (message) => {
-        if(message != ''){
+        if (message != '') {
             api.sendMess(this.props.rid, message, resp => {
                 console.log(resp)
                 document.getElementById("textarea").value = ''
-                this.setState({message:''})
+                this.setState({message: ''})
             })
-        }      
+        }
     }
 
     messageInput = (event) => {
-        this.setState({ message: event.target.value })
+        this.setState({message: event.target.value})
     }
 
     render() {
@@ -47,11 +49,8 @@ class cpmInputMessage extends React.Component {
                             />
 
                         </div>
-                        <div className="boxBtnSendMessage">
-                            <Button type="submit" variant="contained" color="primary" onClick={() => this.sendMessage(this.state.message)}>
-                                Send
-                        <Icon>send</Icon>
-                            </Button>
+                        <div className="boxBtnSendMessage cursor"  onClick={() => this.sendMessage(this.state.message)}>
+                            <Icon>send</Icon>
                         </div>
                     </div>
                 </Grid>
@@ -66,9 +65,7 @@ class cpmInputMessage extends React.Component {
                             className="hidden"
                         />
                         <label htmlFor="contained-button-file">
-                            <Button variant="contained" component="span">
-                                Upload
-                        </Button>
+                            <Upload className="cursor iconUp" color="primary"></Upload>
                         </label>
                     </div>
                 </Grid>
@@ -76,4 +73,5 @@ class cpmInputMessage extends React.Component {
         )
     }
 }
+
 export default cpmInputMessage;
