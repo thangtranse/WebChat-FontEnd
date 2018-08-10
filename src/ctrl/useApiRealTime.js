@@ -62,8 +62,7 @@ class useApiRealTime {
      * @param {*} _userID 
      */
     subscribeNotifyUser(_userID) {
-        console.log("lắng nghe 01");
-        return ddpclient.subscribe("stream-notify-user", [`${_userID}/rooms-changed`, false], (id) => { console.log("lắng nghe", id) });
+        return ddpclient.subscribe("stream-notify-user", [`${_userID}/rooms-changed`, true], (id) => { console.log("lắng nghe", id) });
     }
 
     /**
