@@ -1,18 +1,19 @@
 import React from "react";
 import "../asset/css/style.css";
 import Avatar from "@material-ui/core/Avatar";
-import Icon from "@material-ui/core/Icon";
 import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import Grid from "@material-ui/core/Grid";
-import ExitToApp from "@material-ui/icons/ExitToApp";
 import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import LensIcon from "@material-ui/icons/Lens";
 import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
 
-import LensIcon from "@material-ui/icons/Lens";
+import TableUser from './cpmTableUserForCreateChannel';
 import DropDownMenu from "./view/DropDownMenu";
 import STATUS from "../constant/status";
 var api = require("../ctrl/useApi");
@@ -24,13 +25,11 @@ class cpmBoxInfo extends React.Component {
         this.logout = this.logout.bind(this);
         this.getProp = this.getProp.bind(this);
         this.getProp();
-        this.state = { message: "" };
-    }
-
-    componentDidMount() {
-        api.getPresence().then(response =>
-            this.setState({ status: response.data.presence })
-        );
+        this.state = {
+            open: false,
+            selected:[],
+            channelName:''
+        };
     }
 
     logout() {
@@ -39,6 +38,68 @@ class cpmBoxInfo extends React.Component {
 
     getProp() {
         console.log("thangse 2", this.props.infor);
+    }
+
+    handleClickOpen = () => {
+        this.setState({ open: true });
+    };
+
+    handleClose = () => {
+        this.setState({ open: false });
+    };
+
+    getSelectedUser = (selected) =>{
+        this.setState({selected: selected})
+    }
+
+    getChannelName = (event) =>{
+        this.setState({channelName: event.target.value})
+    }
+
+    createChannel = () => {
+        let channelName = this.state.channelName
+        let listUser = this.state.selected
+        api.createChannel(channelName, listUser, resp => {
+            console.log(resp)
+        })
+        this.handleClose()
+        this.setState({
+            selected: [],
+            channelNam: ''
+        })
+    }
+
+    createGroup() {
+        return (
+            <Dialog
+                open={this.state.open}
+                onClose={this.handleClose}
+                aria-labelledby="form-dialog-title"
+            >
+                <DialogTitle id="form-dialog-title">Tạo Cờ Rúp</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="channelName"
+                        label="Channel Name"
+                        type="text"
+                        fullWidth
+                        onChange={this.getChannelName}
+                    />
+                </DialogContent>
+                <TableUser listUser={this.state.listUser} getSelectedUser={this.getSelectedUser}/>
+
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.createChannel} color="primary">
+                        Create
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     render() {
@@ -61,7 +122,7 @@ class cpmBoxInfo extends React.Component {
         return (
             <Grid container spacing={0} className="cpmBoxInfo">
                 <Grid item xs={12}>
-                    <Grid container>
+                    <Grid container className="boxInfo">
                         <div className="elemtfloat">
                             <Avatar className="imgBoxInfo">
                                 <span>T</span>
@@ -92,5 +153,4 @@ class cpmBoxInfo extends React.Component {
         );
     }
 }
-
 export default cpmBoxInfo;

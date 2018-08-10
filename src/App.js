@@ -5,6 +5,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import Slide from "@material-ui/core/Slide";
+import Loadable from 'react-loadable';
+import Grid from '@material-ui/core/Grid';
 import firebase from "firebase";
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
@@ -38,7 +40,8 @@ const initState = {
     mobileOpen_left: false,
     mobileOpen_right: false,
     allUser: [],
-    status: "online"
+    status: "online",
+    titleHeader: "Ten Lua Chat"
 }
 // Test
 var load = () => `<div>Load</div>`;
@@ -59,7 +62,7 @@ const styles = theme => ({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-
+        background: '#e6e6e885'
     },
     navIconHide: {
         [theme.breakpoints.up('md')]: {
@@ -89,7 +92,6 @@ class App extends React.Component {
         this.getRoom = this.getRoom.bind(this);
         this.getChannel = this.getChannel.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
-        this.getAllUser = this.getAllUser.bind(this);
         this.statusChange = this.statusChange.bind(this);
 
         ddpclient = new useApiRealTime();
@@ -130,6 +132,9 @@ class App extends React.Component {
         });
     }
 
+    /**
+     * Thực hiện đăng ký kết nối Socket với server
+     */
     login() {
         api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
             sessionStorage.setItem('authToken', response.data.data.authToken);
@@ -142,10 +147,12 @@ class App extends React.Component {
                 isLogin: true
             });
             this.getRoom();
-            this.getAllUser();
         });
     }
 
+    /**
+     * Lấy tất cả danh sách phòng
+     */
     getRoom() {
         api.getRoom(request => {
             this.setState({
@@ -172,17 +179,15 @@ class App extends React.Component {
         }
     }
 
-    getAllUser() {
-        api.getAllUser(response => {
-            this.setState({allUser: response.data.result});
-        });
-    }
-
-    getChannel(roomId) {
-        this.setState({roomId: roomId})
+    /**
+     * Lấy thông tin phòng (Message...)
+     * Đăng ký lắng nghe kênh
+     *
+     * @param roomId
+     */
+    getChannel(roomId, roomName) {
+        this.setState({roomId: roomId, titleHeader: roomName});
         this.setState({idApirealtime: newID});
-
-
         // Đăng ký Connect
         this.connectDDP(resp => {
             this.msgHandle(resp)
@@ -192,9 +197,7 @@ class App extends React.Component {
 
         // Lấy data message
         api.getChannelMessHistory(roomId, resp => {
-
-            this.setState({ messHistory: resp })
-
+            this.setState({messHistory: resp})
         })
         // list user trong room
         api.getUserInChannel(roomId, resp => {
@@ -202,10 +205,16 @@ class App extends React.Component {
         })
     }
 
-    getDirectRoom = (partnerId) => {
+    /**
+     * Chat đơn
+     */
+    getDirectRoom = (partnerId, name) => {
         // Đăng ký Connect
         this.connectDDP(resp => {
             this.msgHandle(resp)
+        })
+        this.setState({
+            titleHeader: name
         })
 
         // tạo phòng chat Direct
@@ -236,6 +245,12 @@ class App extends React.Component {
         }
     }
 
+    /**
+     * Thực hiện upload File
+     * Sẽ đẩy lên server Firebase
+     * Cấu hình xem ở file Config.json
+     * @param event
+     */
     uploadFile(event) {
         console.log(event.target.files[0]);
         var file = event.target.files[0];
@@ -266,6 +281,9 @@ class App extends React.Component {
         });
     }
 
+    /**
+     * bla bla
+     */
     testFunction() {
         ddpclient.subscribeNotifyRoom('GENERAL', sessionStorage.getItem("username"));
     }
@@ -288,22 +306,21 @@ class App extends React.Component {
                 <div className={classes.root}>
                     <AppBar className={classes.appBar}>
                         <Toolbar>
-                            <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_left}
-                                        className={classes.navIconHide}>
+                            <IconButton color="inherit" aria-label="Open drawer"
+                                        onClick={this.handleDrawerToggle_left} className={classes.navIconHide}>
                                 <MenuIcon/>
                             </IconButton>
                         </Toolbar>
-                        <Typography variant="title" color="inherit" noWrap>
-                            Responsive drawer
+                        <Typography variant="title" className="titleHeader" noWrap>
+                            {this.state.titleHeader}
                         </Typography>
                         <Toolbar>
-                            <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_right}
-                                        className={classes.navIconHide}>
+                            <IconButton color="inherit" aria-label="Open drawer"
+                                        onClick={this.handleDrawerToggle_right} className={classes.navIconHide}>
                                 <MenuIcon/>
                             </IconButton>
                         </Toolbar>
                     </AppBar>
-
                     <Hidden mdUp>
                         <Drawer variant="temporary" anchor={'left'} open={this.state.mobileOpen_left}
                                 onClose={this.handleDrawerToggle_left}
@@ -345,20 +362,20 @@ class App extends React.Component {
                             }}
                         >
                             <div className="colorbackground_silver">
-
-                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} getDirectRoom={this.getDirectRoom}/>
-
+                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel}
+                                                              allUser={this.state.allUser}
+                                                              getDirectRoom={this.getDirectRoom}/>
                             </div>
                         </Drawer>
                     </Hidden>
                     <Hidden smDown implementation="css">
-
-                        <Drawer variant="permanent" open classes={{ paper: classes.drawerPaper, }}>
+                        <Drawer variant="permanent" open classes={{paper: classes.drawerPaper,}}>
                             <div className="colorbackground_silver">
-                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} getDirectRoom={this.getDirectRoom}/>
+                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel}
+                                                              allUser={this.state.allUser}
+                                                              getDirectRoom={this.getDirectRoom}/>
                             </div>
                         </Drawer>
-
                     </Hidden>
 
                 </div>
