@@ -11,6 +11,8 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import RestoreIcon from '@material-ui/icons/Restore';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import KeyboardTab from '@material-ui/icons/KeyboardTab';
+
 import "../asset/css/style.css";
 
 var api = require("../ctrl/useApi");
@@ -25,7 +27,7 @@ class cpmContainsRight_ListFriends extends React.Component {
             value: 0
         };
         api.getAllUser(response => {
-            this.setState({ allUser: response.data.result });
+            this.setState({allUser: response.data.result});
         });
     }
 
@@ -34,30 +36,44 @@ class cpmContainsRight_ListFriends extends React.Component {
     }
 
     handleChange = () => {
-        this.setState({ value: this.state.value == 1 ? 0 : 1 });
+        this.setState({value: this.state.value == 1 ? 0 : 1});
     };
+
+    actionUser = (user) => {
+        return (
+            <div className="userRoom">
+                <ListItemIcon className="status">
+                    {user.status == "online" ? <LensIcon color="secondary"/> : <LensIcon/>}
+                </ListItemIcon>
+                {this.state.isAllUser ? '' : (
+                    <ListItemIcon className="status" name="leave">
+                        <KeyboardTab color="secondary"/>
+                    </ListItemIcon>
+                )}
+            </div>
+        )
+    }
 
     render() {
         const data = (this.state.isAllUser && this.state.allUser) || _.get(this.props.userInChannel, "data.members") || [];
         return (
             <div>
                 <List component="nav">
-                    <ListSubheader> <BottomNavigation value={this.state.value} onChange={this.handleChange} showLabels className="colorbackground_silver navColor">
-                        <BottomNavigationAction label="All" icon={<RestoreIcon />} onClick={() => this.setState({ isAllUser: true })} />
-                        <BottomNavigationAction label="Room" icon={<FavoriteIcon />} onClick={() => this.setState({ isAllUser: false })} />
+                    <ListSubheader> <BottomNavigation value={this.state.value} onChange={this.handleChange} showLabels
+                                                      className="colorbackground_silver navColor">
+                        <BottomNavigationAction label="All" icon={<RestoreIcon/>}
+                                                onClick={() => this.setState({isAllUser: true})}/>
+                        <BottomNavigationAction label="Room" icon={<FavoriteIcon/>}
+                                                onClick={() => this.setState({isAllUser: false})}/>
                     </BottomNavigation></ListSubheader>
                     {data.map(user => (
-                        <ListItem onClick={()=>this.props.getDirectRoom(user._id, user.username)} button key={`section_${user._id}`} className="listfriends">
+                        <ListItem onClick={() => this.props.getDirectRoom(user._id, user.username)} button
+                                  key={`section_${user._id}`} className="listfriends">
                             <ListItemIcon>
                                 <Avatar className="avatart">H</Avatar>
                             </ListItemIcon>
-                            <ListItemText primary={user.username} className="username" />
-                            <ListItemIcon className="status">
-                                {user.status == "online"
-                                    ? <LensIcon color="secondary" />
-                                    : <LensIcon />
-                                }
-                            </ListItemIcon>
+                            <ListItemText primary={user.username} className="username"/>
+                            {this.actionUser(user)}
                         </ListItem>
                     ))}
                 </List>
