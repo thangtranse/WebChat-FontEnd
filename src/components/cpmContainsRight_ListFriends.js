@@ -13,6 +13,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import "../asset/css/style.css";
 
+import STATUS from "../constant/status";
 var api = require("../ctrl/useApi");
 
 class cpmContainsRight_ListFriends extends React.Component {
@@ -21,42 +22,68 @@ class cpmContainsRight_ListFriends extends React.Component {
         this.state = {
             allUser: [],
             userInChannel: [],
-            isAllUser: true,
-            value: 0
+            isAllUser: true
         };
-        api.getAllUser(response => {
-            this.setState({ allUser: response.data.result });
-        });
+        
+        this.fetchInterval = null; //Fetch user interval
+        this.handleChange = this.handleChange.bind(this);
+        this.showAllUser = this.showAllUser.bind(this);
+        this.showChannelUser = this.showChannelUser.bind(this);
+    }
+    
+    componentDidMount() {
+        this.showAllUser();
     }
 
-    async getUsers() {
-        // var con = await this.checklogin();
+    handleChange(event, value) {
+        if (value === "all") {
+            this.setState({ isAllUser: true });
+            this.showAllUser();
+        } else if (value === "room") {
+            this.setState({ isAllUser: false });
+            this.showChannelUser();
+        }
     }
 
-    handleChange = () => {
-        this.setState({ value: this.state.value == 1 ? 0 : 1 });
-    };
+    showAllUser() {
+        const fetch = () =>
+            api.getAllUser(response => {
+                console.log(response);
+                this.setState({ allUser: response.data.users });
+            });
+
+        fetch();
+        this.fetchInterval = setInterval(fetch, 5000);
+    }
+
+    showChannelUser() {
+        this.fetchInterval && clearInterval(this.fetchInterval); //Clear
+    }
 
     render() {
-        const data = (this.state.isAllUser && this.state.allUser) || _.get(this.props.userInChannel, "data.members") || [];
+        const data =
+            (this.state.isAllUser && (this.state.allUser || [])) ||
+            _.get(this.props.userInChannel, "data.members") ||
+            [];
         return (
             <div>
                 <List component="nav">
-                    <ListSubheader> <BottomNavigation value={this.state.value} onChange={this.handleChange} showLabels className="colorbackground_silver navColor">
-                        <BottomNavigationAction label="All" icon={<RestoreIcon />} onClick={() => this.setState({ isAllUser: true })} />
-                        <BottomNavigationAction label="Room" icon={<FavoriteIcon />} onClick={() => this.setState({ isAllUser: false })} />
-                    </BottomNavigation></ListSubheader>
+                    <ListSubheader>
+                        <BottomNavigation onChange={this.handleChange} showLabels className="colorbackground_silver navColor">
+                            <BottomNavigationAction label="All" value="all" icon={<RestoreIcon />} />
+                            <BottomNavigationAction label="Room" value="room" icon={<FavoriteIcon />} />
+                        </BottomNavigation>
+                    </ListSubheader>
                     {data.map(user => (
                         <ListItem onClick={()=>this.props.getDirectRoom(user._id, user.username)} button key={`section_${user._id}`} className="listfriends">
                             <ListItemIcon>
-                                <Avatar className="avatart">H</Avatar>
+                                <Avatar>H</Avatar>
                             </ListItemIcon>
-                            <ListItemText primary={user.username} className="username" />
-                            <ListItemIcon className="status">
-                                {user.status == "online"
-                                    ? <LensIcon color="secondary" />
-                                    : <LensIcon />
-                                }
+                            <ListItemText primary={user.name} className="username" />
+                            <ListItemIcon>
+                                <LensIcon
+                                    style={{ color: STATUS[user.status] }}
+                                />
                             </ListItemIcon>
                         </ListItem>
                     ))}
