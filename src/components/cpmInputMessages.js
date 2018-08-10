@@ -16,11 +16,14 @@ class cpmInputMessage extends React.Component {
         };
     }
 
-    sendMessage = () => {
-        api.sendMess(this.props.rid, this.state.message, resp => {
-            console.log(resp)
-            document.getElementById("textarea").value = ''
-        })
+    sendMessage = (message) => {
+        if(message != ''){
+            api.sendMess(this.props.rid, message, resp => {
+                console.log(resp)
+                document.getElementById("textarea").value = ''
+                this.setState({message:''})
+            })
+        }      
     }
 
     messageInput = (event) => {
@@ -45,7 +48,7 @@ class cpmInputMessage extends React.Component {
 
                         </div>
                         <div className="boxBtnSendMessage">
-                            <Button type="submit" variant="contained" color="primary" onClick={() => this.sendMessage()}>
+                            <Button type="submit" variant="contained" color="primary" onClick={() => this.sendMessage(this.state.message)}>
                                 Send
                         <Icon>send</Icon>
                             </Button>
