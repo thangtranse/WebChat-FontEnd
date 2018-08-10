@@ -26,6 +26,13 @@
 .imgBoxInfo {
     height: 50px !important;
     width: 50px !important;
+    overflow: visible !important;
+}
+
+.imgBoxInfo > .statusIndicator {
+    position: absolute;
+    right: -0.25em;
+    bottom: -0.25em;
 }
 
 .elemtfloat {

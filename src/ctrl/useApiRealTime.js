@@ -38,7 +38,7 @@ class useApiRealTime {
     }
 
     /**
-     * Lắng nghe Channel General    
+     * Lắng nghe Channel General
      */
     subscribeGenaralRoom() {
         return ddpclient.subscribe("stream-room-messages", ['GENERAL', true]);
@@ -46,8 +46,8 @@ class useApiRealTime {
     }
     /**
      * Đăng ký lắng nghe ROOM
-     * 
-     * @param {*} _roomID 
+     *
+     * @param {*} _roomID
      */
     subscribelRoom(_roomID) {
         return ddpclient.subscribe("stream-room-messages", [_roomID, true]);
@@ -57,9 +57,9 @@ class useApiRealTime {
      * Nhận thông báo sự kiện các Room thay đổi
      * 1. Khi nhận được tin nhắn mới
      * 2. Khi được mời vào 1 Channel/Private Group/Messages
-     * 
+     *
      * Chú Ý: Không nhận được thông báo khi bị đuổi khỏi phòng!!!
-     * @param {*} _userID 
+     * @param {*} _userID
      */
     subscribeNotifyUser(_userID) {
         console.log("lắng nghe 01");
@@ -82,7 +82,7 @@ class useApiRealTime {
     /**
      * CHI SẼ GỌI ĐẠI BÀNG
      * ĐẠI BÀNG KHÔNG NHẬN TIN...
-     * 
+     *
      * * @param {*} _id id kênh lắng nghe
      */
     unSubscriptions(_id) {
@@ -92,16 +92,16 @@ class useApiRealTime {
     /**
      * CHI SẼ GỌI ĐẠI BÀNG
      * ĐẠI BÀNG NGHE RÕ...
-     * 
+     *
      * Lắng nghe Rocket trả giá trị về
-     * @param {*} callback 
+     * @param {*} callback
      */
     listen(callback) {
         ddpclient.on("message", (msg) => callback(msg))
     }
 
     /**
-     * 
+     *
      * @param {*} _filename Tên File
      * @param {*} _filesize Kích thước File
      * @param {*} _filetype Loại File
@@ -142,7 +142,12 @@ class useApiRealTime {
             });
     }
 
-
+    changeStatus(status, callback) {
+        //TODO: Fix presence not working after reload
+        ddpclient.call(`UserPresence:setDefaultStatus`, [status], callback, (...args) => console.log("UPDATED", args));
+        // ddpclient.call(`UserPresence:${status}`, [], callback)
+        // ddpclient.call(`UserPresence:setStatus`, [status], callback)
+    }
 }
 
 module.exports = useApiRealTime;

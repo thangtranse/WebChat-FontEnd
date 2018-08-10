@@ -5,7 +5,7 @@
             - Login
             - logout
             - register: mặc định là user
-        
+
         2/ Rooms:
             - getRoom: lấy ra danh sách room đã được add
 
@@ -130,7 +130,7 @@ class useApi {
         }).catch(function (message) {
             console.log(message);
         })
-    }   
+    }
 
     inviteToChannel(roomId, userId, callback) {
         axios({
@@ -188,7 +188,7 @@ class useApi {
     getAllUser(callback) {
         axios({
             method: 'GET',
-            url: '/directory?query={"type": "users"}',
+            url: '/users.list?query={}',
             headers: {
                 'X-Auth-Token': sessionStorage.getItem('authToken'),
                 'X-User-Id': sessionStorage.getItem('userId')
@@ -378,6 +378,16 @@ class useApi {
         })
     }
 
+    getPresence(user) {  //TODO: use `user` argument
+        return axios({
+            method: 'GET',
+            url: '/users.getPresence',
+            headers: {
+                'X-Auth-Token': sessionStorage.getItem('authToken'),
+                'X-User-Id': sessionStorage.getItem('userId')
+            }
+        })
+    }
 }
 
 module.exports = new useApi();

@@ -1,40 +1,37 @@
-import React from 'react';
-import '../asset/css/style.css';
-import Avatar from '@material-ui/core/Avatar';
-import Icon from '@material-ui/core/Icon';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import Grid from '@material-ui/core/Grid';
-import ExitToApp from '@material-ui/icons/ExitToApp';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import React from "react";
+import "../asset/css/style.css";
+import Avatar from "@material-ui/core/Avatar";
+import Icon from "@material-ui/core/Icon";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import Grid from "@material-ui/core/Grid";
+import ExitToApp from "@material-ui/icons/ExitToApp";
+import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
 
-var api = require('../ctrl/useApi');
+import LensIcon from "@material-ui/icons/Lens";
+import DropDownMenu from "./view/DropDownMenu";
+import STATUS from "../constant/status";
+var api = require("../ctrl/useApi");
 
 class cpmBoxInfo extends React.Component {
-
     constructor(props) {
         super(props);
+        console.log(this.props)
         this.logout = this.logout.bind(this);
         this.getProp = this.getProp.bind(this);
         this.getProp();
-        this.state = {
-            anchorEl: null,
-            message:'',
-        };
+        this.state = { message: "" };
     }
 
-    handleClick = event => {
-        this.setState({anchorEl: event.currentTarget});
-    };
-
-    handleClose = () => {
-        this.setState({anchorEl: null});
-    };
-
+    componentDidMount() {
+        api.getPresence().then(response =>
+            this.setState({ status: response.data.presence })
+        );
+    }
 
     logout() {
         api.logout();
@@ -45,35 +42,52 @@ class cpmBoxInfo extends React.Component {
     }
 
     render() {
+        const statusItems = Object.keys(STATUS)
+            .filter(status => status != "offline")
+            .map(status => {
+                return {
+                    value: (
+                        <React.Fragment>
+                            <LensIcon style={{ color: STATUS[status] }} />
+                            <span>{status}</span>
+                        </React.Fragment>
+                    ),
+                    onClick: () => {
+                        this.props.onStatusChange(status)
+                    }
+                };
+            });
+
         return (
             <Grid container spacing={0} className="cpmBoxInfo">
                 <Grid item xs={12}>
                     <Grid container>
                         <div className="elemtfloat">
-                            <Avatar className="imgBoxInfo"> T </Avatar>
+                            <Avatar className="imgBoxInfo">
+                                <span>T</span>
+                                <LensIcon
+                                    className="statusIndicator"
+                                    style={{
+                                        color: STATUS[this.props.status]
+                                    }}
+                                />
+                            </Avatar>
                             <label className="textUser">
                                 {this.props.infor.name}
                             </label>
                         </div>
-                        <IconButton
-                            aria-owns={this.state.anchorEl ? 'simple-menu' : null}
-                            aria-haspopup="true"
-                            onClick={this.handleClick}
-                        >
-                            <ArrowDropDown color="error"/>
-                        </IconButton>
-                        <Menu
-                            id="simple-menu"
-                            anchorEl={this.state.anchorEl}
-                            open={Boolean(this.state.anchorEl)}
-                            onClose={this.handleClose}
-                        >
-                            <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={this.handleClose}>My account</MenuItem>
-                            <MenuItem onClick={this.logout}>Logout</MenuItem>
-                        </Menu>
+                        <DropDownMenu
+                            component={IconButton}
+                            header={<ArrowDropDown color="error" />}
+                            items={[
+                                ...statusItems,
+                                { value: "Profile" },
+                                { value: "My account" },
+                                { value: "Logout", onClick: this.logout }
+                            ]}
+                        />
                     </Grid>
-                </Grid> 
+                </Grid>
             </Grid>
         );
     }
