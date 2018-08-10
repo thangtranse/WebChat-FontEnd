@@ -9,7 +9,7 @@ import Loadable from 'react-loadable';
 import Grid from '@material-ui/core/Grid';
 import firebase from "firebase";
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,6 +21,7 @@ import CpmBoxInfo from './components/cpmBoxInfo';
 import CpmListGroup from './components/cpmListGroup';
 import CpmContainsRight_ListFriends from './components/cpmContainsRight_ListFriends';
 import CpmContainsMiddle_BoxChat from './components/cpmContainsMiddle_BoxChat';
+
 var api = require('./ctrl/useApi');
 var managerCache = require('./ctrl/managerCache');
 var useApiRealTime = require('./ctrl/useApiRealTime');
@@ -39,7 +40,8 @@ const initState = {
     userInChannel: null,
     isConnect: false,
     mobileOpen_left: false,
-    mobileOpen_right: false
+    mobileOpen_right: false,
+    allUser: []
 }
 // Test
 var load = () => `<div>Load</div>`;
@@ -60,7 +62,7 @@ const styles = theme => ({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        
+
     },
     navIconHide: {
         [theme.breakpoints.up('md')]: {
@@ -90,12 +92,13 @@ class App extends React.Component {
         this.getRoom = this.getRoom.bind(this);
         this.getChannel = this.getChannel.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
+        this.getAllUser = this.getAllUser.bind(this);
 
         ddpclient = new useApiRealTime();
     }
 
     connectDDP = (callback) => {
-        if (!this.state.isConnect){
+        if (!this.state.isConnect) {
             ddpclient.login(sessionStorage.getItem("authToken"), (err, result) => {
                 if (err) {
                     console.log("Login Realtime Fail ", err);
@@ -114,10 +117,10 @@ class App extends React.Component {
     }
 
     handleDrawerToggle_left = () => {
-        this.setState(state => ({ mobileOpen_left: !state.mobileOpen_left }));
+        this.setState(state => ({mobileOpen_left: !state.mobileOpen_left}));
     };
     handleDrawerToggle_right = () => {
-        this.setState(state => ({ mobileOpen_right: !state.mobileOpen_right }));
+        this.setState(state => ({mobileOpen_right: !state.mobileOpen_right}));
     };
 
     // Nhận sự kiện onChange
@@ -143,6 +146,7 @@ class App extends React.Component {
             sessionStorage.setItem('username', response.data.data.me.username);
             sessionStorage.setItem('name', response.data.data.me.name);
             this.getRoom();
+            this.getAllUser();
         });
     }
 
@@ -158,40 +162,46 @@ class App extends React.Component {
         switch (resp.msg) {
             case "changed":
                 // Direct 
-                if(resp.fields.eventName.length > 25){
+                if (resp.fields.eventName.length > 25) {
                     api.getImHistory(resp.fields.eventName, resp => {
-                        this.setState({ messHistory: resp })
+                        this.setState({messHistory: resp})
                     })
                 }
                 // Channel
-                else{
+                else {
                     api.getChannelMessHistory(resp.fields.eventName, resp => {
-                        this.setState({ messHistory: resp })
+                        this.setState({messHistory: resp})
                     })
                 }
         }
     }
 
-    getChannel(roomId) {
-        this.setState({ roomId: roomId })
-        this.setState({ idApirealtime: newID });
+    getAllUser(){
+        api.getAllUser(response => {
+            this.setState({ allUser: response.data.result });
+        });
+    }
 
-        
+    getChannel(roomId) {
+        this.setState({roomId: roomId})
+        this.setState({idApirealtime: newID});
+
+
         // Đăng ký Connect
         this.connectDDP(resp => {
             this.msgHandle(resp)
-        })        
-        
+        })
+
         let newID = ddpclient.subscribelRoom(roomId)
 
         // Lấy data message
         api.getChannelMessHistory(roomId, resp => {
             console.log(resp)
-            this.setState({ messHistory: resp })
+            this.setState({messHistory: resp})
         })
         // list user trong room
         api.getUserInChannel(roomId, resp => {
-            this.setState({ userInChannel: resp })
+            this.setState({userInChannel: resp})
         })
     }
 
@@ -199,17 +209,17 @@ class App extends React.Component {
         // Đăng ký Connect
         this.connectDDP(resp => {
             this.msgHandle(resp)
-        }) 
+        })
 
         // tạo phòng chat Direct 
         api.createIM(partnerId, resp => {
-            this.setState({ roomId: resp.data.room._id })
+            this.setState({roomId: resp.data.room._id})
 
             let newID = ddpclient.subscribelRoom(resp.data.room._id)
-            this.setState({ idApirealtime: newID });
+            this.setState({idApirealtime: newID});
 
-            api.getImHistory(resp.data.room._id, resp=>{
-                this.setState({ messHistory: resp })
+            api.getImHistory(resp.data.room._id, resp => {
+                this.setState({messHistory: resp})
             })
         })
     }
@@ -264,47 +274,53 @@ class App extends React.Component {
     }
 
     render() {
-        const { classes, theme } = this.props;
+        const {classes, theme} = this.props;
         if (this.state.isLogin) {
             return (
                 <div className={classes.root}>
                     <AppBar className={classes.appBar}>
                         <Toolbar>
-                            <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_left} className={classes.navIconHide}>
-                                <MenuIcon />
+                            <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_left}
+                                        className={classes.navIconHide}>
+                                <MenuIcon/>
                             </IconButton>
                         </Toolbar>
                         <Typography variant="title" color="inherit" noWrap>
                             Responsive drawer
                         </Typography>
                         <Toolbar>
-                            <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_right} className={classes.navIconHide}>
-                                <MenuIcon />
+                            <IconButton color="inherit" aria-label="Open drawer" onClick={this.handleDrawerToggle_right}
+                                        className={classes.navIconHide}>
+                                <MenuIcon/>
                             </IconButton>
                         </Toolbar>
                     </AppBar>
 
                     <Hidden mdUp>
-                        <Drawer variant="temporary" anchor={'left'} open={this.state.mobileOpen_left} onClose={this.handleDrawerToggle_left}
-                            classes={{ paper: classes.drawerPaper, }}
-                            ModalProps={{ keepMounted: true, }}>
+                        <Drawer variant="temporary" anchor={'left'} open={this.state.mobileOpen_left}
+                                onClose={this.handleDrawerToggle_left}
+                                classes={{paper: classes.drawerPaper,}}
+                                ModalProps={{keepMounted: true,}}>
                             <div className="colorbackground_blue leftBox">
-                                <CpmBoxInfo infor={this.state} ></CpmBoxInfo>
-                                <CpmListGroup listgroup={this.state.listGroup} getChannel={this.getChannel}></CpmListGroup>
+                                <CpmBoxInfo infor={this.state}></CpmBoxInfo>
+                                <CpmListGroup listgroup={this.state.listGroup}
+                                              getChannel={this.getChannel}></CpmListGroup>
                             </div>
                         </Drawer>
                     </Hidden>
                     <Hidden smDown implementation="css">
-                        <Drawer variant="permanent" open classes={{ paper: classes.drawerPaper, }}>
+                        <Drawer variant="permanent" open classes={{paper: classes.drawerPaper,}}>
                             <div className="colorbackground_blue leftBox">
-                                <CpmBoxInfo infor={this.state} ></CpmBoxInfo>
-                                <CpmListGroup listgroup={this.state.listGroup} getChannel={this.getChannel}></CpmListGroup>
+                                <CpmBoxInfo infor={this.state}></CpmBoxInfo>
+                                <CpmListGroup listgroup={this.state.listGroup}
+                                              getChannel={this.getChannel}></CpmListGroup>
                             </div>
                         </Drawer>
                     </Hidden>
 
                     <main className={classes.content}>
-                        <CpmContainsMiddle_BoxChat uploadFile={this.uploadFile} rid={this.state.roomId} messHistory={this.state.messHistory} />
+                        <CpmContainsMiddle_BoxChat uploadFile={this.uploadFile} rid={this.state.roomId}
+                                                   messHistory={this.state.messHistory}/>
                     </main>
 
                     <Hidden mdUp>
@@ -321,16 +337,18 @@ class App extends React.Component {
                             }}
                         >
                             <div className="colorbackground_silver">
-                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} />
+                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel}
+                                                              allUser={this.state.allUser}/>
                             </div>
                         </Drawer>
                     </Hidden>
                     <Hidden smDown implementation="css">
-                        <Drawer variant="permanent" open classes={{ paper: classes.drawerPaper, }}>
-                            <div className="colorbackground_silver">
-                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} />
-                            </div>
-                        </Drawer>
+                        <div className="colorbackground_silver">
+                            <Drawer variant="permanent" open classes={{paper: classes.drawerPaper,}}>
+                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel}
+                                                              allUser={this.state.allUser}/>
+                            </Drawer>
+                        </div>
                     </Hidden>
 
                 </div>
@@ -340,20 +358,20 @@ class App extends React.Component {
             return (
                 <div>
                     <Dialog open={this.state.open}
-                        TransitionComponent={Transition}
-                        keepMounted>
+                            TransitionComponent={Transition}
+                            keepMounted>
                         <div className="boxLogin">
                             <h1> Đăng Nhập </h1>
                             <TextField id="username"
-                                label="Username"
-                                margin="normal"
-                                onChange={this.inputChange} />
+                                       label="Username"
+                                       margin="normal"
+                                       onChange={this.inputChange}/>
                             <TextField onChange={this.inputChange}
-                                id="password"
-                                label="Password"
-                                type="password"
-                                ref="password"
-                                margin="normal" />
+                                       id="password"
+                                       label="Password"
+                                       type="password"
+                                       ref="password"
+                                       margin="normal"/>
                         </div>
                         <DialogActions>
                             <Button onClick={this.login} color="primary"> Đăng nhập </Button>
@@ -374,4 +392,4 @@ App.propTypes = {
     theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(App);
+export default withStyles(styles, {withTheme: true})(App);
