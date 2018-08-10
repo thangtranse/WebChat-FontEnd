@@ -3,11 +3,11 @@
 }
 
 .colorbackground_blue {
-    background: #444753;
+    background: #44475312 !important;
 }
 
 .colorbackground_silver {
-    background: #444753 !important;
+    background: #44475312 !important;
 }
 
 .leftBox {
@@ -17,7 +17,7 @@
 .cpmBoxInfo {
     min-height: 80px;
     max-height: auto;
-    background: #444753;
+    background: #e6e6e8;
     padding: 14px 10px;
     width: 100%;
     border-bottom: 1px solid #fff;
@@ -42,11 +42,11 @@
 }
 
 .cmpListGroup ul li {
-    color: #C5CAE9;
+    color: rgba(0, 0, 0, 0.87);
 }
 
 .cmpListGroup ul li div span {
-    color: #E8EAF6;
+    color: rgba(0, 0, 0, 0.87);
     font-size: 90%;
 }
 
@@ -118,7 +118,7 @@
 }
 
 .textUser{
-    color: #E8EAF6;
+    color: rgba(0, 0, 0, 0.87);
     font-size: 19px;
     padding-left: 10px;
 }
@@ -163,10 +163,6 @@
 .listfriends{
     padding-left: 10px !important;
     padding-right: 5px !important;
-}
-
-.navColor button{
-    color: #fff !important;
 }
 
 .avatart{

@@ -41,8 +41,8 @@ class cpmContainsRight_ListFriends extends React.Component {
         return (
             <div>
                 <BottomNavigation value={this.state.value} onChange={this.handleChange} showLabels className="colorbackground_silver navColor">
-                    <BottomNavigationAction label="Recents" icon={<RestoreIcon />} onClick={() => this.setState({ isAllUser: true })} />
-                    <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} onClick={() => this.setState({ isAllUser: false })} />
+                    <BottomNavigationAction label="All" icon={<RestoreIcon />} onClick={() => this.setState({ isAllUser: true })} />
+                    <BottomNavigationAction label="Room" icon={<FavoriteIcon />} onClick={() => this.setState({ isAllUser: false })} />
                 </BottomNavigation>
                 <List component="nav">
                     {data.map(user => (

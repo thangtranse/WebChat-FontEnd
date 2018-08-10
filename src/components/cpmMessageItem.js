@@ -22,7 +22,7 @@ function CpmMessageItem({ user, message, isSender }) {
         <Grid item>
             <Paper elevation={1} className="boxMessage">
                 <Typography variant="caption">{user}</Typography>
-                <Typography variant="headline">{message.match(regex) ? attachFile(message) : message}</Typography>
+                <Typography>{message.match(regex) ? attachFile(message) : message}</Typography>
             </Paper>
         </Grid>
     );
