@@ -38,7 +38,8 @@ const initState = {
     userInChannel: null,
     isConnect: false,
     mobileOpen_left: false,
-    mobileOpen_right: false
+    mobileOpen_right: false,
+    titleHeader: "Ten Lua Chat"
 }
 // Test
 var load = () => `<div>Load</div>`;
@@ -128,6 +129,9 @@ class App extends React.Component {
         });
     }
 
+    /**
+     * Thực hiện đăng ký kết nối Socket với server
+     */
     login() {
         api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
             sessionStorage.setItem('authToken', response.data.data.authToken);
@@ -143,6 +147,9 @@ class App extends React.Component {
         });
     }
 
+    /**
+     * Lấy tất cả danh sách phòng
+     */
     getRoom() {
         api.getRoom(request => {
             this.setState({
@@ -169,11 +176,15 @@ class App extends React.Component {
         }
     }
 
-    getChannel(roomId) {
-        this.setState({roomId: roomId})
+    /**
+     * Lấy thông tin phòng (Message...)
+     * Đăng ký lắng nghe kênh
+     *
+     * @param roomId
+     */
+    getChannel(roomId, roomName) {
+        this.setState({roomId: roomId, titleHeader: roomName});
         this.setState({idApirealtime: newID});
-
-
         // Đăng ký Connect
         this.connectDDP(resp => {
             this.msgHandle(resp)
@@ -191,10 +202,16 @@ class App extends React.Component {
         })
     }
 
-    getDirectRoom = (partnerId) => {
+    /**
+     * Chat đơn
+     */
+    getDirectRoom = (partnerId, name) => {
         // Đăng ký Connect
         this.connectDDP(resp => {
             this.msgHandle(resp)
+        })
+        this.setState({
+            titleHeader: name
         })
 
         // tạo phòng chat Direct 
@@ -225,6 +242,12 @@ class App extends React.Component {
         }
     }
 
+    /**
+     * Thực hiện upload File
+     * Sẽ đẩy lên server Firebase
+     * Cấu hình xem ở file Config.json
+     * @param event
+     */
     uploadFile(event) {
         console.log(event.target.files[0]);
         var file = event.target.files[0];
@@ -255,6 +278,9 @@ class App extends React.Component {
         });
     }
 
+    /**
+     * bla bla
+     */
     testFunction() {
         ddpclient.subscribeNotifyRoom('GENERAL', sessionStorage.getItem("username"));
     }
@@ -272,7 +298,7 @@ class App extends React.Component {
                             </IconButton>
                         </Toolbar>
                         <Typography variant="title" className="titleHeader" noWrap>
-                            Responsive drawer
+                            {this.state.titleHeader}
                         </Typography>
                         <Toolbar>
                             <IconButton color="inherit" aria-label="Open drawer"

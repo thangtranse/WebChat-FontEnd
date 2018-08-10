@@ -45,8 +45,8 @@ class cpmListGroup extends React.Component {
                                 <ListItem
                                     key={item._id}
                                     id={item._id}
-                                    className="cursor"
-                                    onClick={() => this.props.getChannel(item._id)}
+                                    className="cursor group"
+                                    onClick={() => this.props.getChannel(item._id, item.name)}
                                 >
                                     <Avatar alt="Remy Sharp">T</Avatar>
                                     <ListItemText primary={item.name} id={item._id} />
