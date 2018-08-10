@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
 import GridListTile from '@material-ui/core/GridListTile';
 import GridList from '@material-ui/core/GridList';
+
 function CpmMessageItem({ user, message, isSender }) {
 
     var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;

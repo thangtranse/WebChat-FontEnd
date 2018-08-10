@@ -55,39 +55,6 @@ class cpmListGroup extends React.Component {
                         }
                     </ul>
                 </li>
-                <li key="group">
-                    <ul>
-                        <ListSubheader>Private Group</ListSubheader>
-                        {
-                            group.map(item => (
-                                <ListItem key={item._id}
-                                    className="cursor"
-                                    onClick={() => this.props.getChannel(item._id)}
-                                >
-                                    <Avatar alt="Remy Sharp">T</Avatar>
-                                    <ListItemText primary={item.name} />
-                                </ListItem>
-                            ))
-                        }
-                    </ul>
-                </li>
-                <li key="messages">
-                    <ul>
-                        <ListSubheader className="textLabel">Direct Messages</ListSubheader>
-                        {
-                            messages.map(item => (
-                                <ListItem
-                                    key={item._id}
-                                    className="cursor"
-                                    onClick={() => this.props.getChannel(item._id)}
-                                >
-                                    <Avatar alt="Remy Sharp">T</Avatar>
-                                    <ListItemText id={item._id} />
-                                </ListItem>
-                            ))
-                        }
-                    </ul>
-                </li>
             </List>
         )
     }
