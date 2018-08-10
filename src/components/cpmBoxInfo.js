@@ -1,14 +1,19 @@
 import React from 'react';
 import '../asset/css/style.css';
 import Avatar from '@material-ui/core/Avatar';
-import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import CreateNewFolder from '@material-ui/icons/CreateNewFolder';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 var api = require('../ctrl/useApi');
 
@@ -21,7 +26,8 @@ class cpmBoxInfo extends React.Component {
         this.getProp();
         this.state = {
             anchorEl: null,
-            message:'',
+            message: '',
+            open: false
         };
     }
 
@@ -40,6 +46,47 @@ class cpmBoxInfo extends React.Component {
 
     getProp() {
         console.log("thangse 2", this.props.infor);
+    }
+
+    handleClickOpen = () => {
+        this.setState({ open: true });
+    };
+
+    handleClose = () => {
+        this.setState({ open: false });
+    };
+
+    CreateGroup() {
+        return (
+            <Dialog
+                open={this.state.open}
+                onClose={this.handleClose}
+                aria-labelledby="form-dialog-title"
+            >
+                <DialogTitle id="form-dialog-title">Tạo Cờ Rúp</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        ahihi
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Email Address"
+                        type="email"
+                        fullWidth
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={this.handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={this.handleClose} color="primary">
+                        Subscribe
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     render() {
@@ -75,9 +122,10 @@ class cpmBoxInfo extends React.Component {
                 <Grid item xs={12}>
                     <Grid container>
                         <div>
-                            <IconButton color="primary" aria-label="Add an alarm">
+                            <IconButton color="primary" aria-label="Add an alarm" onClick={this.handleClickOpen}>
                                 <CreateNewFolder></CreateNewFolder>
                             </IconButton>
+                            {this.CreateGroup()}
                         </div>
                     </Grid>
                 </Grid>
@@ -85,5 +133,4 @@ class cpmBoxInfo extends React.Component {
         );
     }
 }
-
 export default cpmBoxInfo;
