@@ -10,7 +10,6 @@ import GridListTile from "@material-ui/core/GridListTile";
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import BorderColor from '@material-ui/icons/BorderColor';
-import $ from 'jquery';
 
 class cpmContainsMiddle_BoxChat extends React.Component {
     constructor(props) {
@@ -108,9 +107,6 @@ class cpmContainsMiddle_BoxChat extends React.Component {
     }
 
     render() {
-        console.log("oke");
-        console.log($('.showPop:last-child').height())
-
         return (
             <div>
                 <Grid container spacing={0} className="cpmContainsMiddle_BoxChat">
