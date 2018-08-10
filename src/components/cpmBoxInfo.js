@@ -13,6 +13,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Clear from '@material-ui/icons/Clear';
 
+import TableUser from './cpmTableUserForCreateChannel';
+
+
 var api = require('../ctrl/useApi');
 
 class cpmBoxInfo extends React.Component {
@@ -25,9 +28,11 @@ class cpmBoxInfo extends React.Component {
         this.state = {
             anchorEl: null,
             message: '',
-            open: false
+            open: false,
+            selected:[],
+            channelName:''
         };
-    }
+    }    
 
 
 
@@ -52,7 +57,28 @@ class cpmBoxInfo extends React.Component {
         this.setState({ open: false });
     };
 
-    CreateGroup() {
+    getSelectedUser = (selected) =>{
+        this.setState({selected: selected})
+    }
+
+    getChannelName = (event) =>{
+        this.setState({channelName: event.target.value})
+    }
+
+    createChannel = () => {
+        let channelName = this.state.channelName
+        let listUser = this.state.selected
+        api.createChannel(channelName, listUser, resp => {
+            console.log(resp)
+        })
+        this.handleClose()
+        this.setState({
+            selected: [],
+            channelNam: ''
+        })
+    }
+
+    createGroup() {
         return (
             <Dialog
                 open={this.state.open}
@@ -61,24 +87,24 @@ class cpmBoxInfo extends React.Component {
             >
                 <DialogTitle id="form-dialog-title">Tạo Cờ Rúp</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        ahihi
-                    </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="name"
-                        label="Email Address"
-                        type="email"
+                        id="channelName"
+                        label="Channel Name"
+                        type="text"
                         fullWidth
+                        onChange={this.getChannelName}
                     />
                 </DialogContent>
+                <TableUser listUser={this.state.listUser} getSelectedUser={this.getSelectedUser}/>
+
                 <DialogActions>
                     <Button onClick={this.handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={this.handleClose} color="primary">
-                        Subscribe
+                    <Button onClick={this.createChannel} color="primary">
+                        Create
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -107,7 +133,7 @@ class cpmBoxInfo extends React.Component {
                             <IconButton color="primary" aria-label="Add an alarm" onClick={this.handleClickOpen}>
                                 <CreateNewFolder></CreateNewFolder>
                             </IconButton>
-                            {this.CreateGroup()}
+                            {this.createGroup()}
                         </div>
                     </Grid>
                 </Grid>
