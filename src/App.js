@@ -31,8 +31,6 @@ const initState = {
     username: "",
     password: "",
     name: "",
-    userId: "",
-    authToken: "",
     listGroup: [],
     isLogin: false,
     messHistory: null,
@@ -106,8 +104,8 @@ class App extends React.Component {
             this.setState({isConnect: true})
             ddpclient.subscribeNotifyUser(sessionStorage.getItem("userId"));
             ddpclient.listen((resp) => {
-                console.log(resp)
                 let temp = JSON.parse(resp)
+                console.log(temp)
                 return callback(temp)
             });
         }
@@ -120,7 +118,7 @@ class App extends React.Component {
         this.setState(state => ({ mobileOpen_right: !state.mobileOpen_right }));
     };
 
-    // Nhận sự kiện onChange
+    // Nhận username password
     inputChange(event) {
         console.log(event.target.id)
         this.setState({
@@ -131,17 +129,15 @@ class App extends React.Component {
 
     login() {
         api.login(document.getElementById("username").value, document.getElementById("password").value, response => {
-            this.setState({
-                open: false,
-                name: response.data.data.me.name,
-                userId: response.data.data.userId,
-                authToken: response.data.data.authToken,
-                isLogin: true
-            });
             sessionStorage.setItem('authToken', response.data.data.authToken);
             sessionStorage.setItem('userId', response.data.data.userId);
             sessionStorage.setItem('username', response.data.data.me.username);
             sessionStorage.setItem('name', response.data.data.me.name);
+            this.setState({
+                open: false,
+                name: response.data.data.me.name,
+                isLogin: true
+            });
             this.getRoom();
         });
     }
@@ -186,7 +182,6 @@ class App extends React.Component {
 
         // Lấy data message
         api.getChannelMessHistory(roomId, resp => {
-            console.log(resp)
             this.setState({ messHistory: resp })
         })
         // list user trong room
@@ -321,14 +316,14 @@ class App extends React.Component {
                             }}
                         >
                             <div className="colorbackground_silver">
-                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} />
+                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} getDirectRoom={this.getDirectRoom}/>
                             </div>
                         </Drawer>
                     </Hidden>
                     <Hidden smDown implementation="css">
                         <Drawer variant="permanent" open classes={{ paper: classes.drawerPaper, }}>
                             <div className="colorbackground_silver">
-                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} />
+                                <CpmContainsRight_ListFriends userInChannel={this.state.userInChannel} allUser={this.state.allUser} getDirectRoom={this.getDirectRoom}/>
                             </div>
                         </Drawer>
                     </Hidden>
