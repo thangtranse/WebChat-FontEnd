@@ -72,9 +72,6 @@ class cpmContainsRight_ListFriends extends React.Component {
     actionUser = (user) => {
         return (
             <div className="userRoom">
-                <ListItemIcon className="status">
-                    {user.status == "online" ? <LensIcon color="secondary"/> : <LensIcon/>}
-                </ListItemIcon>
                 {this.state.isAllUser ? '' : (
                     <ListItemIcon className="status" name="leave">
                         <KeyboardTab color="secondary"/>
@@ -106,15 +103,10 @@ class cpmContainsRight_ListFriends extends React.Component {
                             <ListItemIcon>
                                 <Avatar>H</Avatar>
                             </ListItemIcon>
-
-                            <ListItemText primary={user.username} className="username"/>
                             {this.actionUser(user)}
-
                             <ListItemText primary={user.name} className="username" />
                             <ListItemIcon>
-                                <LensIcon
-                                    style={{ color: STATUS[user.status] }}
-                                />
+                                <LensIcon style={{ color: STATUS[user.status] }}/>
                             </ListItemIcon>
 
                         </ListItem>

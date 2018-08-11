@@ -12,6 +12,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import LensIcon from "@material-ui/icons/Lens";
 import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
+import CreateNewFolder from "@material-ui/icons/CreateNewFolder";
 
 import TableUser from './cpmTableUserForCreateChannel';
 import DropDownMenu from "./view/DropDownMenu";
@@ -21,9 +22,9 @@ var api = require("../ctrl/useApi");
 class cpmBoxInfo extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props)
         this.logout = this.logout.bind(this);
         this.getProp = this.getProp.bind(this);
+        this.createGroup = this.createGroup.bind(this);
         this.getProp();
         this.state = {
             open: false,
@@ -89,7 +90,6 @@ class cpmBoxInfo extends React.Component {
                     />
                 </DialogContent>
                 <TableUser listUser={this.state.listUser} getSelectedUser={this.getSelectedUser}/>
-
                 <DialogActions>
                     <Button onClick={this.handleClose} color="primary">
                         Cancel
@@ -147,6 +147,16 @@ class cpmBoxInfo extends React.Component {
                                 { value: "Logout", onClick: this.logout }
                             ]}
                         />
+                    </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container>
+                        <div>
+                            <IconButton color="primary" aria-label="Add an alarm" onClick={this.handleClickOpen}>
+                                <CreateNewFolder></CreateNewFolder>
+                            </IconButton>
+                            {this.createGroup()}
+                        </div>
                     </Grid>
                 </Grid>
             </Grid>
