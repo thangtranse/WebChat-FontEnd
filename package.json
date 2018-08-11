@@ -9,7 +9,6 @@
     "ddp-client": "^0.1.2",
     "evergreen-ui": "^3.2.4",
     "firebase": "^5.3.1",
-    "jquery": "^3.3.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-firebase-file-uploader": "^2.4.2",
