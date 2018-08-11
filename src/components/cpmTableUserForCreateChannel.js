@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -16,17 +16,18 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
+import {lighten} from '@material-ui/core/styles/colorManipulator';
+
 const api = require("../ctrl/useApi");
 
 const columnData = [
-    { id: 'name' },
+    {id: 'name'},
 ];
 
 class EnhancedTableHead extends React.Component {
 
     render() {
-        const { onSelectAllClick, numSelected, rowCount } = this.props;
+        const {onSelectAllClick, numSelected, rowCount} = this.props;
 
         return (
             <TableHead>
@@ -78,7 +79,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-    const { numSelected, classes } = props;
+    const {numSelected, classes} = props;
 
     return (
         <Toolbar
@@ -90,18 +91,18 @@ let EnhancedTableToolbar = props => {
                 {numSelected > 0 ? (
                     <Typography color="inherit" variant="subheading">
                         {numSelected} selected
-          </Typography>
+                    </Typography>
                 ) : (
-                        <Typography variant="title" id="tableTitle">
-                            Members
-          </Typography>
-                    )}
+                    <Typography variant="title" id="tableTitle">
+                        Members
+                    </Typography>
+                )}
             </div>
-            <div className={classes.spacer} />
+            <div className={classes.spacer}/>
             <div className={classes.actions}>
                 <Tooltip title="Filter list">
                     <IconButton aria-label="Filter list">
-                        <FilterListIcon />
+                        <FilterListIcon/>
                     </IconButton>
                 </Tooltip>
             </div>
@@ -128,29 +129,29 @@ class EnhancedTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selected: [],
-            data: []
+            data: [],
+            selected: []
         };
         api.getAllUser(response => {
-            this.setState({ data: response.data.result });
+            console.log("tmt", response);
+            this.setState({data: response.data.users});
         });
     }
 
     handleSelectAllClick = (event, checked) => {
         if (checked) {
-            this.setState(state => ({ selected: state.data.map(user => user.username) }));
+            this.setState(state => ({selected: state.data.map(user => user.username)}));
             this.props.getSelectedUser(this.state.data.map(user => user.username))
             return;
         }
-        this.setState({ selected: [] });
+        this.setState({selected: []});
         this.props.getSelectedUser([])
     };
 
     handleClick = (event, id) => {
-        const { selected } = this.state;
+        const {selected} = this.state;
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
-
         if (selectedIndex === -1) {
             newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
@@ -163,20 +164,18 @@ class EnhancedTable extends React.Component {
                 selected.slice(selectedIndex + 1),
             );
         }
-
-        this.setState({ selected: newSelected });
+        this.setState({selected: newSelected});
         this.props.getSelectedUser(newSelected)
     };
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
     render() {
-        const { classes } = this.props;
-        const { data, selected } = this.state;
-
+        const {classes} = this.props;
+        const {data, selected} = this.state;
         return (
             <Paper className={classes.root}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length}/>
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle">
                         <EnhancedTableHead
@@ -198,7 +197,7 @@ class EnhancedTable extends React.Component {
                                         selected={isSelected}
                                     >
                                         <TableCell padding="checkbox">
-                                            <Checkbox checked={isSelected} />
+                                            <Checkbox checked={isSelected}/>
                                         </TableCell>
                                         <TableCell component="th" scope="row" padding="none">
                                             {user.username}

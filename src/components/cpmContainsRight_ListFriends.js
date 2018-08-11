@@ -59,7 +59,17 @@ class cpmContainsRight_ListFriends extends React.Component {
     showChannelUser() {
         this.fetchInterval && clearInterval(this.fetchInterval); //Clear
     }
-
+    actionUser = (user) => {
+        return (
+            <div className="userRoom">
+                {this.state.isAllUser ? '' : (
+                    <ListItemIcon className="status" name="leave">
+                        <KeyboardTab color="secondary"/>
+                    </ListItemIcon>
+                )}
+            </div>
+        )
+    }
     render() {
         const data =
             (this.state.isAllUser && (this.state.allUser || [])) ||
@@ -79,11 +89,10 @@ class cpmContainsRight_ListFriends extends React.Component {
                             <ListItemIcon>
                                 <Avatar>H</Avatar>
                             </ListItemIcon>
+                            {this.actionUser(user)}
                             <ListItemText primary={user.name} className="username" />
                             <ListItemIcon>
-                                <LensIcon
-                                    style={{ color: STATUS[user.status] }}
-                                />
+                                <LensIcon style={{ color: STATUS[user.status] }}/>
                             </ListItemIcon>
                         </ListItem>
                     ))}
