@@ -208,7 +208,9 @@
 .avatart {
     margin-right: 5px !important;
 }
-
+.listfriends svg{
+    font-size: 8px;
+}
 .username {
     padding: 0px 5px !important;
 }
