@@ -57,14 +57,17 @@ class cpmBoxInfo extends React.Component {
         this.setState({ open: false });
     };
 
+    // lấy những user đc chọn để thêm vào channel
     getSelectedUser = (selected) =>{
         this.setState({selected: selected})
     }
 
+    // tên Channel
     getChannelName = (event) =>{
         this.setState({channelName: event.target.value})
     }
 
+    // tạo channel
     createChannel = () => {
         let channelName = this.state.channelName
         let listUser = this.state.selected
@@ -97,6 +100,8 @@ class cpmBoxInfo extends React.Component {
                         onChange={this.getChannelName}
                     />
                 </DialogContent>
+
+                {/* Hiển thị list user để add vào channel */}
                 <TableUser listUser={this.state.listUser} getSelectedUser={this.getSelectedUser}/>
 
                 <DialogActions>

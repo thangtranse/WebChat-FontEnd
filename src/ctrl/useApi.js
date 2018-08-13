@@ -315,7 +315,7 @@ class useApi {
             data: {
                 roomId: roomId,
                 msgId: msgId,
-                asUser: "true"      // Quy định chỉ người gửi mới được xóa tn của họ
+                asUser: true    // Quy định chỉ người gửi mới được xóa tn của họ
             }
         }).then(response => {
             return callback(response)
@@ -368,7 +368,7 @@ class useApi {
             },
             data: {
                 roomId: roomId,
-                messageId: msgId,
+                msgId: msgId,
                 text: text
             }
         }).then(response => {
