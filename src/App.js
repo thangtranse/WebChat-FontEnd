@@ -1,12 +1,8 @@
 import React from 'react';
+import _ from 'lodash';
 import './asset/css/style.css';
-import TextField from "@material-ui/core/TextField";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import Slide from "@material-ui/core/Slide";
-import Loadable from 'react-loadable';
-import Grid from '@material-ui/core/Grid';
+// import Loadable from 'react-loadable';
+// import Grid from '@material-ui/core/Grid';
 import firebase from "firebase";
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
@@ -21,6 +17,8 @@ import CpmBoxInfo from './components/cpmBoxInfo';
 import CpmListGroup from './components/cpmListGroup';
 import CpmContainsRight_ListFriends from './components/cpmContainsRight_ListFriends';
 import CpmContainsMiddle_BoxChat from './components/cpmContainsMiddle_BoxChat';
+
+import Login from './components/Login'
 
 var api = require('./ctrl/useApi');
 var managerCache = require('./ctrl/managerCache');
@@ -89,6 +87,7 @@ class App extends React.Component {
         this.state = initState;
         this.inputChange = this.inputChange.bind(this);
         this.login = this.login.bind(this);
+        this.fbLogin = this.fbLogin.bind(this);
         this.getRoom = this.getRoom.bind(this);
         this.getChannel = this.getChannel.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
@@ -150,6 +149,22 @@ class App extends React.Component {
         });
     }
 
+    fbLogin({ authResponse: { accessToken, expiresIn } }) {
+        console.log(accessToken, expiresIn);
+        api.loginWithFacebook(accessToken, expiresIn, response => {
+            sessionStorage.setItem('authToken', response.data.data.authToken);
+            sessionStorage.setItem('userId', response.data.data.userId);
+            sessionStorage.setItem('username', response.data.data.me.username);
+            sessionStorage.setItem('name', response.data.data.me.name);
+            this.setState({
+                open: false,
+                name: response.data.data.me.name,
+                isLogin: true
+            });
+            this.getRoom();
+        })
+    }
+
     /**
      * Lấy tất cả danh sách phòng
      */
@@ -186,8 +201,12 @@ class App extends React.Component {
      * @param roomId
      */
     getChannel(roomId, roomName) {
-        this.setState({roomId: roomId, titleHeader: roomName});
-        this.setState({idApirealtime: newID});
+        this.setState({
+            roomId: roomId,
+            titleHeader: roomName,
+            idApirealtime: newID,
+            messHistory: null
+        });
         // Đăng ký Connect
         this.connectDDP(resp => {
             this.msgHandle(resp)
@@ -345,7 +364,12 @@ class App extends React.Component {
 
                     <main className={classes.content}>
                         <CpmContainsMiddle_BoxChat uploadFile={this.uploadFile} rid={this.state.roomId}
-                                                   messHistory={this.state.messHistory}/>
+                                                   messHistory={_(_(this.state.messHistory).get('data.messages') || [])
+                                                                .chain()
+                                                                .clone()
+                                                                .reverse()
+                                                                .value()
+                                                            }/>
                     </main>
 
                     <Hidden mdUp>
@@ -382,36 +406,12 @@ class App extends React.Component {
             )
         }
         else {
-            return (
-                <div>
-                    <Dialog open={this.state.open}
-                            TransitionComponent={Transition}
-                            keepMounted>
-                        <div className="boxLogin">
-                            <h1> Đăng Nhập </h1>
-                            <TextField id="username"
-                                       label="Username"
-                                       margin="normal"
-                                       onChange={this.inputChange}/>
-                            <TextField onChange={this.inputChange}
-                                       id="password"
-                                       label="Password"
-                                       type="password"
-                                       ref="password"
-                                       margin="normal"/>
-                        </div>
-                        <DialogActions>
-                            <Button onClick={this.login} color="primary"> Đăng nhập </Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-            )
+            return <Login open={this.state.open}
+                          onChange={this.inputChange}
+                          onLogin={this.login}
+                          onFBLogin={this.fbLogin}/>
         }
     }
-}
-
-function Transition(props) {
-    return <Slide direction="up" {...props} />;
 }
 
 App.propTypes = {

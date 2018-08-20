@@ -13,7 +13,7 @@ class cpmListGroup extends React.Component {
         this.state = {
         }
 
-        this.showRoom(this.props.listgroup)
+        // this.showRoom(this.props.listgroup)
     }
 
     showRoom = (listRooms) => {

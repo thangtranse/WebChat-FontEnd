@@ -21,7 +21,7 @@ class cpmContainsMiddle_BoxChat extends React.Component {
 
     showMessage = messHistory => {
         if (messHistory) {
-            let listmess = messHistory.data.messages.reverse()
+            let listmess = messHistory
             return listmess.map(message => (
                 <div key={`div_${message._id}`} className="showPop">
                     {this.CpmMessageItem(message.u.username, message.msg, message.u._id === sessionStorage.getItem("userId"))}
