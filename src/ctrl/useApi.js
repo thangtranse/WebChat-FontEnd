@@ -44,6 +44,18 @@ class useApi {
         })
     }
 
+    loginWithFacebook(accessToken, expiresIn, callback) {
+        axios.post('/login', {
+            serviceName: 'facebook',
+            secret: '01c542efa0559407596162c02a366579',
+            // secret: 'b5222fa7378e3add050404750c0fdc5d',
+            accessToken,
+            expiresIn
+        })
+        .then(callback)
+        .catch(message => console.log(message))
+    }
+
     logout() {
         axios({
             method: 'POST',
