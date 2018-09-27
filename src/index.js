@@ -4,7 +4,5 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import CpmUploadFile from './components/cpmUploadFile'
 
-
-
 ReactDOM.render(<App/>, document.getElementById('root'));
 registerServiceWorker();

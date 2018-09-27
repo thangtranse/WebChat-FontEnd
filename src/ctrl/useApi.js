@@ -1,4 +1,3 @@
-
 {/*
     List api:
         1/ Authentication
@@ -25,7 +24,8 @@
             - getMessageInfo
             - reactMessage
             - editMessage
-*/}
+*/
+}
 
 var axios = require('./request_api_rocket');
 
@@ -75,7 +75,6 @@ class useApi {
         })
     }
 
-
     // 2. Rooms
     getRoom(callback) {
         axios({
@@ -88,9 +87,9 @@ class useApi {
         }).then(response => {
             return callback(response.data.update)
         })
-        .catch(function (message) {
-            console.log(message);
-        })
+            .catch(function (message) {
+                console.log(message);
+            })
     }
 
 
@@ -114,7 +113,7 @@ class useApi {
         })
     }
 
-    leaveChannel(roomId, callback){
+    leaveChannel(roomId, callback) {
         axios({
             method: 'POST',
             url: '/channels.leave',
@@ -358,7 +357,7 @@ class useApi {
         })
     }
 
-    editMessage(roomId, msgId, text, callback){
+    editMessage(roomId, msgId, text, callback) {
         axios({
             method: 'POST',
             url: '/chat.update',
