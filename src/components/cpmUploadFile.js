@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import firebase from "firebase";
 import FileUploader from "react-firebase-file-uploader";
+
 const config = {
   apiKey: "AIzaSyCDp93JTc75sIZhgx4KLYFjryiYdDzPTdk",
   authDomain: "ten-lua.firebaseapp.com",
   databaseURL: "https://ten-lua.firebaseio.com",
   storageBucket: "ten-lua.appspot.com"
 };
+
 firebase.initializeApp(config);
 
 class ProfilePage extends Component {
@@ -23,14 +25,14 @@ class ProfilePage extends Component {
   //   this.setState({ username: event.target.value });
 
   handleUploadStart = () => this.setState({ isUploading: true, progress: 0 });
-  
+
   handleProgress = progress => this.setState({ progress });
-  
+
   handleUploadError = error => {
     this.setState({ isUploading: false });
     console.error(error);
   };
-  
+
   handleUploadSuccess = filename => {
     this.setState({ avatar: filename, progress: 100, isUploading: false });
     firebase

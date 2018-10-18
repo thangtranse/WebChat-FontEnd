@@ -29,7 +29,6 @@ class FacebookButton extends React.Component {
                     <span>
                         <img
                             style={{ width: "32px", height: "32px" }}
-                            // src="https://static.xx.fbcdn.net/rsrc.php/v3/y-/r/yaVUljxxGFs.png"
                             src="https://static.xx.fbcdn.net/rsrc.php/yo/r/iRmz9lCMBD2.ico"
                         />
                     </span>
